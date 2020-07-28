@@ -11,6 +11,14 @@ primitiveSort :: (Ord a) => [a] -> [a]
 
 -- *** DO NOT MODIFY ABOVE CODE ***
 
-unorderedWitnesses = undefined 
-swap = undefined
-primitiveSort = undefined
+unorderedWitnesses a = filter f [0..((length a) -2)]
+    where
+        f x = (get (x+1) a) < (get (x) a)
+
+swap i j a = set (get j a) i (set (get i a) j a)
+
+primitiveSort a = recSort a 0 (unorderedWitnesses a)
+recSort a i w = if' (i < length w) goThroughWitnesses untilWitnessesEmpty
+    where 
+        untilWitnessesEmpty = (if' (0 < length w) (recSort a 0 (unorderedWitnesses a)) a)
+        goThroughWitnesses = (recSort (swap (get i w) ((get i w) + 1) a) (i + 1) (unorderedWitnesses a))
