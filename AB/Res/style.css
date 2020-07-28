@@ -1,0 +1,143 @@
+html, body { 
+	font-family: 'Open Sans', sans-serif; 
+	margin:0;
+	padding:0;
+  text-align:justify;
+  min-width:700px;
+}
+
+#header {
+	color: #050e59; 
+	background: #dbe0ff;
+	padding: 8px;
+}
+
+#navi {
+  padding:8px;
+  border-bottom:1px solid #dbe0ff;
+}
+
+#navi a {
+  padding-left:7px;
+  padding-right:7px;
+}
+
+#body2 {
+	margin:8px;	
+}
+
+.abTag { 
+	border: 1px solid #050e59;
+	border-radius:10px;
+	padding: 0.3em;
+	font-weight: bold; 
+	font-size: 0.7em;
+	color: #050e59; 
+	background: #dbe0ff;	
+}
+
+h1 {
+	text-align: center;
+}
+
+h2 {
+	margin-top:2em;
+}
+
+pre {
+	font-family: 'Source Code Pro', monospace; 
+}
+
+code {
+	font-family: 'Source Code Pro', monospace; 
+}
+
+.fName {
+	font-family: 'Source Code Pro', monospace; 
+	color: #06287e;
+}
+
+.codeSnippet {
+	background: #f0f0f0; 
+	overflow:auto;
+	width:auto;
+	font-family: 'Source Code Pro', monospace; 
+	font-size: 1.2em; border:solid gray;
+	border-width: 1px 1px 1px 5px;
+	padding:.2em .6em;
+	margin-top:0.5em;
+	margin-bottom:0.5em;
+}
+
+table.egyptTable {
+  border-collapse: collapse;
+  width: 10em;	  
+  display:inline-table;
+  margin-left:10px;
+  margin-right:10px;
+}
+
+table.egyptTable th {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;	
+  text-align: center;
+}
+
+table.egyptTable td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;	
+  text-align: right;
+}
+
+table.pmkTable {
+  border-collapse: collapse;
+  width: 10em;	  
+  display:inline-table;
+  margin-left:10px;
+  margin-right:10px;
+}
+
+table.pmkTable th {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;	
+  text-align: center;
+}
+
+table.pmkTable td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;	
+  text-align: left;
+}
+
+
+table.qs {
+  border-collapse: collapse;   
+  display:inline-table;
+  margin-left:10px;
+  margin-right:10px;
+}
+
+table.qs td {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #ccc;	
+  text-align: center;
+  width:2em;
+}
+
+.qsPivot {
+  background:#ffa1a1;
+}
+.qsCur {
+  background:#b3dbff;
+}
+
+.fig {
+  text-align:center;
+  margin-top:12px;
+  margin-bottom:12px;
+}

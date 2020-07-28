@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>[SP20] Anleitung &amp; Hinweise</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<link rel="stylesheet" type="text/css" href="Res/style.css">
+</head>
+<body>
+<div id="header">
+<span style="font-weight:bold;">
+Systematisches Programmieren 
+<span style="float:right;">Sommersemester 2020</span><br>
+Dr. Maurice Chandoo
+<span style="float:right;">Leibniz Universität Hannover</span><br>
+</span>
+</div>
+
+<div id="navi">
+<div style="float: right"><a href="AB1.html">AB1 &#10095;</a></div>
+<div style="margin: 0 auto;width:inherit;text-align:center;">
+<a href="#sw">Benötigte Software</a>
+<a href="#hs">Haskell</a>
+<a href="#sp">sp-Programme</a>
+<a href="#abgabe">Abgaben</a>
+</div>
+</div>
+
+<div id="body2" style="margin-bottom:45vh;">
+<h1><span class="abTag">Info</span> Anleitung &amp; Hinweise</h1>
+
+<p>Dieses Dokument enthält Informationen zur benötigten Software für diesen Kurs, eine kurze Einführung in Haskell mit Code-Beispielen, eine Erklärung zu sp-Programmen und Hinweise bezüglich der Abgabe von Arbeitsblättern. </p>
+
+<p>
+Bei Fragen oder Problemen schreiben Sie eine E-Mail an <a href="sysprog@thi.uni-hannover.de">sysprog@thi.uni-hannover.de</a> mit dem Kennwort [Frage] im Betreff, z.B. "[Frage] Wie kompiliert man eine hs-Datei?".
+</p>
+
+<h2 id="sw"><a href="#sw">Benötigte Software (GHC, spc, csv-Viewer)</a></h2>
+<p>
+Zum Ausführen von Haskell-Code wird der <a href="https://www.haskell.org/downloads/">Glasgow Haskell Compiler (kurz GHC)</a> benötigt. Der <i>minimal installer</i> ist ausreichend. Falls Sie Haskell nicht über einen Packetmanager installieren möchten, können Sie alternativ auch die Binaries auf <a href="https://www.haskell.org/ghc/download_ghc_8_10_1.html">https://www.haskell.org/ghc/download_ghc_8_10_1.html</a> direkt herunterladen. Fügen Sie den Pfad, in dem die Programme <code>ghc</code> und <code>ghci</code> liegen, zur <code>path</code>-Umgebungsvariable hinzu.
+</p>
+
+<p>
+Die Datei <code>start.zip</code> enthält den Ordner <code>spc</code>. Dieser Ordner beinhaltet den Quellcode für das gleichnamige Programm, welches zum Übersetzen von sp-Programmen in Haskell benutzt wird. Es kann mit dem Befehl <code>ghc -O2 spc.hs</code> kompiliert werden. Fügen Sie den Pfad zum Programm <code>spc</code> zur <code>path</code>-Umgebungsvariable hinzu. Im Abschnitt sp-Programme wird erklärt wie das Programm zu nutzen ist.
+</p>
+
+<p>
+Beim Ausführen von sp-Programmen können Traces (tr-Dateien) generiert werden, welche den genauen Ablauf des Programms für eine Eingabe beschreiben. Damit diese einfacher lesbar sind, können diese tr-Dateien in csv-Dateien umgewandelt werden. Ein Tabellenkalkulationsprogramm zum Betrachten solcher Dateien, wie z.B. <a href="https://de.libreoffice.org/">LibreOffic Calc</a>, ist daher empfehlenswert.
+</p>
+
+<h2 id="hs"><a href="#hs">Kurzeinführung in Haskell</a></h2>
+<p>
+In der Datei <code>example/Test.hs</code> sind einige Beispiele, welche Sie testen und modifizieren können. Öffnen Sie die Datei dazu mit dem Interpreter <code>ghci</code>. Im Interpreter können Ausdrücke wie z.B. <code>2*(3+4)</code> oder <code>couple "abc" "123"</code> eingegeben werden.  Mit dem Befehl <code>:r</code> können Sie die Datei neu laden, z.B. nachdem Sie diese verändert haben und mit <code>:q</code> beenden Sie den Interpreter. Mit dem Befehl <code>:t</code> können Sie den Typ einer Funktion ausgeben lassen, z.B. <code>:t couple</code>. Mit einem Ausrufezeichen können Sie Befehle der Kommandozeile ausführen, z.B. <code>:!clear</code> (bzw. <code>:!cls</code> auf Windows).
+</p>
+
+
+<ul>
+  <li><a href="#hs-expr">Funktionen und Ausdrücke</a></li>
+  <li><a href="#hs-data">Datentypen und Pattern Matching</a></li>
+  <li><a href="#hs-classes">Type Classes</a></li>
+  <li><a href="#hs-trace">Tracing / Debugging</a></li>
+  <li><a href="#hs-module">Module</a></li>
+  <li><a href="#hs-learn">Learn You A Haskell</a></li>
+</ul>
+
+<h3 id="hs-expr"><a href="#hs-expr">Funktionen und Ausdrücke</a></h3>
+<p>
+Funktionen werden durch Ausdrücke definiert. Der Kontrollfluss, welcher in imperativen Sprachen durch Kontrollstrukturen (if, for, while, etc.) gesteuert werden kann, muss in Haskell mittels Rekursion realisiert werden. 
+</p>
+
+<p>
+Ausdrücke werden in Präfix-Notation angegeben. Ein Aufruf <code>f(x, g(y, z), myVar)</code> würde in Haskell als <code>(f x (g y z) myVar)</code> geschrieben werden. Binäre Operatoren sind zweistellige Funktionen, dessen Namen nicht aus alphanumerischen Zeichen bestehen, wie z.B. <code>+</code>, <code>-</code>, <code>*</code>, <code>&&</code>, <code>||</code>, <code>==</code>. Diese werden in Infix-Notation verwendet: <code>(((3 * (2 + x)) > y) && (fun z))</code>. Die Klammern am Anfang und Ende eines Ausdrucks können weggelassen werden, z.B. wäre <code>f x (g y z) myVar</code> auch in Ordnung.
+</p>
+
+<p>
+Funktions- und Variablennamen fangen immer mit einem Kleinbuchstaben an. Sie dürfen auch ein Apostroph <code>'</code> enthalten, sofern es nicht an erster Stelle vorkommt. Der folgende Code definiert eine Funktion <code>f2</code>, welche drei Eingabeparameter <code>x</code>, <code>y</code>, <code>y'</code> hat und <code>y</code> zurück gibt, falls <code>x</code> ungerade ist, ansonsten <code>y'</code>.
+<!--
+f2 x y y' = (if' ((mod x 2) == 1) y y')
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">f2</span> x y y' <span style="color: #007020; font-weight: bold">=</span> (if&#39; ((mod x <span style="color: #40a070">2</span>) <span style="color: #666666">==</span> <span style="color: #40a070">1</span>) y y')
+</pre></div><!--END-->
+Die Funktion <code>if'</code> hat drei Eingabeparameter und gibt den zweiten zurück, falls der erste Parameter wahr ist, ansonsten den dritten.
+</p>
+
+
+<p>
+Eine Konstante kann als eine Funktion gesehen werden, welche keine Eingabeparameter hat. Beispiele für verschiedene Literale: 
+<!--
+pi = 3.14 
+baseNo = 2 
+str = "a string" -- type String
+chr = 'x' -- type Char
+flag_q2 = False -- type Bool 
+list = [2,3,5,7] -- list of numbers
+{-
+ the following constant contains a 3x3 matrix
+ with entries from 1 to 9
+-}
+matrix = 
+  [
+    [1,2,3],    
+    [4,5,6],
+    [7,8,9]
+  ]  
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">pi</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #40a070">3.14</span> 
+<span style="color: #06287e">baseNo</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #40a070">2</span> 
+<span style="color: #06287e">str</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #4070a0">&quot;a string&quot;</span> <span style="color: #60a0b0; font-style: italic">-- type String</span>
+<span style="color: #06287e">chr</span> <span style="color: #007020; font-weight: bold">=</span> &#39;x&#39; <span style="color: #60a0b0; font-style: italic">-- type Char</span>
+<span style="color: #06287e">flag_q2</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">False</span> <span style="color: #60a0b0; font-style: italic">-- type Bool </span>
+<span style="color: #06287e">list</span> <span style="color: #007020; font-weight: bold">=</span> [<span style="color: #40a070">2</span>,<span style="color: #40a070">3</span>,<span style="color: #40a070">5</span>,<span style="color: #40a070">7</span>] <span style="color: #60a0b0; font-style: italic">-- list of numbers</span>
+<span style="color: #60a0b0; font-style: italic">{-</span>
+<span style="color: #60a0b0; font-style: italic"> the following constant contains a 3x3 matrix</span>
+<span style="color: #60a0b0; font-style: italic"> with entries from 1 to 9</span>
+<span style="color: #60a0b0; font-style: italic">-}</span>
+<span style="color: #06287e">matrix</span> <span style="color: #007020; font-weight: bold">=</span> 
+  [
+    [<span style="color: #40a070">1</span>,<span style="color: #40a070">2</span>,<span style="color: #40a070">3</span>],    
+    [<span style="color: #40a070">4</span>,<span style="color: #40a070">5</span>,<span style="color: #40a070">6</span>],
+    [<span style="color: #40a070">7</span>,<span style="color: #40a070">8</span>,<span style="color: #40a070">9</span>]
+  ]
+</pre></div><!--END-->
+Ein Ausdruck kann über mehrere Zeilen gehen, wie im Beispiel von <code>matrix</code>. Jede Zeile des Ausdrucks muss aber mit mehr Leerzeichen eingerückt sein als das erste Zeichen des Funktionsnamens (in diesem Fall <code>m</code>). Es sollten keine Tabulatorzeichen verwendet werden. Das erste Beispiel könnte auch so geschrieben werden: 
+<!--
+f2 x y y' = 
+  (if' ((mod x 2) == 1) 
+    y 
+    y'
+  )
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">f2</span> x y y&#39; <span style="color: #007020; font-weight: bold">=</span> 
+  (if&#39; ((mod x <span style="color: #40a070">2</span>) <span style="color: #666666">==</span> <span style="color: #40a070">1</span>) 
+    y 
+    y&#39;
+  )
+</pre></div><!--END-->
+</p>
+
+
+<p>
+Der Typ einer einstelligen Funktion, dessen Eingabeparameter vom Typ <code>Int</code> ist und dessen Rückgabewert vom Typ <code>Bool</code>, lautet <code>Int -> Bool</code>. Nehmen wir an, dass in <code class="fName">f2</code> die Variable <code>x</code> vom Typ <code>Int</code> und die Variablen <code>y</code>, <code>y'</code> vom Typ <code>String</code> sind. Dann würde die Signatur der Funktion wie folgt aussehen: 
+<!--
+f2 :: Int -> String -> String -> String
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">f2</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">String</span>
+</pre></div><!--END-->
+Die Typen der Eingabeparameter sind durch <code>-></code> getrennt und der letzte Typ ist der Typ des Rückgabewerts. Der Operator <code>-></code> ist rechtsassoziativ und der obige Typausdruck wird daher als <code>Int -> (String -> (String -> String))</code> interpretiert. Das heißt, <code class="fName">f2</code> kann als einstellige Funktion gesehen werden, welche einen Parameter vom Typ <code>Int</code> hat und dessen Rückgabewert vom Typ <code>(String -> (String -> String))</code> ist; der Rückgabewert ist selbst eine Funktion. Die Interpretation einer mehrstelligen Funktion als eine Reihe von einstelligen Funktionen wird als Currying bezeichnet. 
+Der Ausdruck <code>(f2 1)</code> gibt eine Funktion zurück, welcher der Funktion <code class="fName">f2</code> entspricht, wobei der erste Eingabeparameter auf den Wert <code>1</code> festgelegt wird. Dies wird als partielle Applikation bezeichnet.
+Falls für eine Funktion keine Signatur angegeben wird, dann versucht der Compiler bzw. Interpreter eine möglichst allgemeinen Signatur selbst abzuleiten. 
+</p>
+
+<p>
+Die <code>where</code>-Klausel erlaubt es, mehrfach vorkommende oder lange Teilausdrücke bei der Definition einer Funktion separat zu definieren.  
+<!--
+f3 x = z
+  where
+    y = x + x
+    z = y * y 
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">f3</span> x <span style="color: #007020; font-weight: bold">=</span> z
+  <span style="color: #007020; font-weight: bold">where</span>
+    y <span style="color: #007020; font-weight: bold">=</span> x <span style="color: #666666">+</span> x
+    z <span style="color: #007020; font-weight: bold">=</span> y <span style="color: #666666">*</span> y 
+</pre></div><!--END-->
+Die Bezeichner <code>y</code> und <code>z</code> sind nur innerhalb der Definition von <code>f3</code> gültig. Ist z.B. <code>y</code> bereits auf globaler Ebene definiert, dann wird die Definition aus der <code>where</code>-Klausel bevorzugt  (shadowing). Mehrfach verschachtelte <code>where</code>-Klauseln sind möglich.
+</p>
+
+
+<h3 id="hs-data"><a href="#hs-data">Datentypen und Pattern Matching</a></h3>
+
+<p>
+Mit dem Schlüsselwort <code>type</code> können Typaliase eingeführt werden, z.B. <code>type Age = Int</code>. Ein Alias wird identisch behandelt wie der Typausdruck auf der rechten Seite. Jedes Vorkommen von <code>Age</code> kann durch <code>Int</code> ersetzt werden und andersherum, ohne die Semantik des Programms zu beeinflussen. 
+</p>
+
+<p>
+Ein Datentyp in Haskell besteht aus einem Namen und mindestens einem Konstruktor. Ein Konstruktor beschreibt wie ein Datentyp repräsentiert wird. Ein Konstruktor besteht aus einem Namen und einer Reihe von Typausdrücken. Zum Beispiel kann eine Farbe mittels <a href="https://de.wikipedia.org/wiki/RGB-Farbraum">RGB</a> oder <a href="https://de.wikipedia.org/wiki/HSV-Farbraum">HSV</a> repräsentiert werden. In beiden Fällen werde drei Werte benötigt, welche als <code>Float</code> ausgedrückt werden können.
+<!--
+data Color = RGB Float Float Float | HSV Hue Saturation Value
+type Hue = Float        -- [0°,359°] = [0.0,1.0]
+type Saturation = Float -- [0%,100%] = [0.0,1.0]
+type Value = Float      -- [0%,100%] = [0.0,1.0]
+
+black  = RGB 0.0 0.0 0.0
+black' = HSV 0.5 0.6 0.0
+red    = RGB 1.0 0.0 0.0
+red'   = HSV 0.0 1.0 1.0
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #007020; font-weight: bold">data</span> <span style="color: #902000">Color</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">RGB</span> <span style="color: #902000">Float</span> <span style="color: #902000">Float</span> <span style="color: #902000">Float</span> <span style="color: #666666">|</span> <span style="color: #902000">HSV</span> <span style="color: #902000">Hue</span> <span style="color: #902000">Saturation</span> <span style="color: #902000">Value</span>
+<span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">Hue</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">Float</span>        <span style="color: #60a0b0; font-style: italic">-- [0°,359°] = [0.0,1.0]</span>
+<span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">Saturation</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">Float</span> <span style="color: #60a0b0; font-style: italic">-- [0%,100%] = [0.0,1.0]</span>
+<span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">Value</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">Float</span>      <span style="color: #60a0b0; font-style: italic">-- [0%,100%] = [0.0,1.0]</span>
+
+<span style="color: #06287e">black</span>  <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">RGB</span> <span style="color: #40a070">0.0</span> <span style="color: #40a070">0.0</span> <span style="color: #40a070">0.0</span>
+<span style="color: #06287e">black&#39;</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">HSV</span> <span style="color: #40a070">0.5</span> <span style="color: #40a070">0.6</span> <span style="color: #40a070">0.0</span>
+<span style="color: #06287e">red</span>    <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">RGB</span> <span style="color: #40a070">1.0</span> <span style="color: #40a070">0.0</span> <span style="color: #40a070">0.0</span>
+<span style="color: #06287e">red&#39;</span>   <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">HSV</span> <span style="color: #40a070">0.0</span> <span style="color: #40a070">1.0</span> <span style="color: #40a070">1.0</span>
+</pre></div><!--END-->
+</p>
+
+<p>Bezeichner von Datentypen und Konstruktoren beginnen stets mit einem Großbuchstaben. Dadurch können Sie von Variablen- und Funktionsbezeichnern unterschieden werden. Ein Konstruktor kann den gleichen Namen haben wie der Datentyp (üblich, wenn es nur einen Konstruktor gibt). Mit Typaliasen kann man dokumentieren, welche Art von Wert man an welcher Stelle des Konstruktors erwartet, wie im obigen Beispiel für <code>HSV</code>. Ein Konstruktor kann wie eine Funktion aufgerufen werden, um einen Wert zu definieren. 
+</p>
+
+<p>
+Mittels Pattern Matching kann auf die Werte eines Konstruktors zugegriffen werden.
+Ein Pattern ist ein Ausdruck, der auf der rechten Seite von <code>=</code> vorkommt und nur aus Konstruktoren und Variablen besteht. Ein Pattern beschreibt eine Menge von Werten, die eine gewisse Struktur aufweisen (z.B. Listen mit mindestens zwei Elementen) und kann Teile dieser Strukturen an Variablen binden (z.B. "sei <code>y</code> das zweite Element der Liste"). 
+<!--
+redVal (RGB x _ _) = x --redVal red == 1.0
+swapRedBlue (RGB r g b) = (RGB b g r)
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">redVal</span> (<span style="color: #902000">RGB</span> x <span style="color: #007020; font-weight: bold">_</span> <span style="color: #007020; font-weight: bold">_</span>) <span style="color: #007020; font-weight: bold">=</span> x <span style="color: #60a0b0; font-style: italic">--redVal red == 1.0</span>
+<span style="color: #06287e">swapRedBlue</span> (<span style="color: #902000">RGB</span> r g b) <span style="color: #007020; font-weight: bold">=</span> (<span style="color: #902000">RGB</span> b g r)
+</pre></div><!--END-->
+Die Funktion <code class="fName">redVal</code> gibt den Rot-Farbwert eines Werts vom Typ <code>Color</code> zurück, welcher mittels des Konstruktors <code>RGB</code> definiert wurde. Die Unterstriche stehen dafür, dass die Werte an diesen Stellen nicht benötigt werden. Der Ausdruck <code>redVal red'</code> würde zur Fehlermeldung <code>Non-exhaustive patterns</code> führen, da die Funktion nicht definiert ist für den  Konstruktor <code>HSV</code>. Man könnte eine weitere Zeile <code>redVal (HSV h s v) = ...</code> hinzufügen, welche den Rotwert aus der HSV-Repräsentation berechnet. 
+</p>
+
+<p>
+Ein Konstruktor kann auch ganz allein ohne Typausdrücke vorkommen. Zum Beispiel ist der Datentyp <code>Bool</code> definiert als <code>data Bool = True | False</code>. Ein Datentyp der nur aus Konstruktoren ohne Typausdrücke besteht, kann als Enumeration gesehen werden. Entsprechend kann über Pattern Matching eine Fallunterscheidung vorgenommen werden, je nachdem ob eine Variable vom Typ <code>Bool</code> wahr oder falsch ist. 
+<!--
+if' True  x y = x
+if' False x y = y
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">if&#39;</span> <span style="color: #902000">True</span>  x y <span style="color: #007020; font-weight: bold">=</span> x
+<span style="color: #06287e">if&#39;</span> <span style="color: #902000">False</span> x y <span style="color: #007020; font-weight: bold">=</span> y
+</pre></div><!--END-->
+</p>
+
+<p>
+Listen haben zwei spezielle Konstruktoren <code>[]</code> und <code>:</code>. Auf der rechten Seite vom <code>=</code> ist der Ausdruck <code>(2:[3,4,5])</code> gleichbedeutend mit <code>prepend 2 [3,4,5]</code>, was <code>[2,3,4,5]</code> ergibt. Auf der linken Seite als Pattern haben sie folgende Bedeutung:
+<ul>
+  <li><code>(x:xRest)</code> &mdash; falls die Liste aus mindestens einem Element besteht, dann sei <code>x</code> das erste Element und <code>xRest</code> die Liste ohne das erste Element</li>
+  <li><code>[]</code> &mdash; falls die Liste leer ist</li>
+  <li><code>(x:[])</code> &mdash; falls die Liste aus genau einem Element besteht, dann sei <code>x</code> dieses Element</li>
+  <li><code>[x]</code> &mdash; gleichbedeutend mit <code>(x:[])</code></li>
+</ul>
+<!--
+listTest [x,y] = "list with exactly two elements"
+listTest (x:(y:z)) = "list with at least two elements"
+listTest z = "all other cases"
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">listTest</span> [x,y] <span style="color: #007020; font-weight: bold">=</span> <span style="color: #4070a0">&quot;list with exactly two elements&quot;</span>
+<span style="color: #06287e">listTest</span> (x<span style="color: #902000">:</span>(y<span style="color: #902000">:</span>z)) <span style="color: #007020; font-weight: bold">=</span> <span style="color: #4070a0">&quot;list with at least two elements&quot;</span>
+<span style="color: #06287e">listTest</span> z <span style="color: #007020; font-weight: bold">=</span> <span style="color: #4070a0">&quot;all other cases&quot;</span>
+</pre></div>
+Beim Aufruf der Funktion <code class="fName">listTest</code> werden die Patterns der Reihe nach geprüft und die erste Definition gewählt, dessen Pattern passt. Zuerst wird also geprüft, ob die Liste genau zwei Elemente hat, danach, ob sie mindestens zwei hat und in allen anderen Fällen wird die dritte Definition gewählt. Würde man die erste und dritte Zeile vertauschen, würde die Funktion immer <code>"all other cases"</code> zurückgeben.
+</p>
+
+
+<h3 id="hs-classes"><a href="#hs-classes">Type Classes</a></h3>
+<p>
+Eine Typklasse beschreibt eine Menge von Typen, für die bestimmte Funktionen definiert sind. Zum Beispiel können zwei Werte des Typs <code>Int</code> oder <code>Float</code> beide mit der Funktion <code class="fName"><</code> verglichen werden. Dies ist möglich, weil beide Typen Mitglieder der Typklasse <code>Ord</code> (von ordered) sind. Mitglieder dieser Typklasse müssen die Funktionen <code class="fName"><</code>, <code class="fName"><=</code>, <code class="fName">></code>, <code class="fName">>=</code> definieren.
+Typklassen sind ähnlich zu Interfaces in anderen Programmiersprachen. 
+</p>
+
+<p>
+Mitglieder der Typklasse <code>Eq</code> (von equal) müssen die Funktionen <code class="fName">==</code> und <code class="fName">/=</code> definieren. Bis auf Funktionstypen (Typen der Form <code>* -> *</code>) sind alle Typen, welche in dem Kurs genutzt werden, Mitglieder von <code>Eq</code> und können daher auf Gleichheit geprüft werden. 
+</p>
+
+<p>
+Mitglieder der Typklasse <code>Show</code> können mittels der Funktion <code class="fName">show</code> in eine String umgewandelt werden. Mitglieder der Typklasse <code>Read</code> können mittels der Funktion <code class="fName">read</code> von einem String zurück umgewandelt werden. Der Rückgabetyp muss dabei angegeben werden, z.B. <code>( (read "[1,2,3]") :: [Int])</code>.
+</p>
+
+<p>
+Für selbst-definierte Datentypen gibt es mittels des Schlüsselwortes <code>deriving</code> die Möglichkeit, dass die Funktionen einer bestimmten Typklasse automatisch für diesen Typ definiert werden. Dadurch wird der selbst-definierte Typ zum Mitglied dieser Typklasse. 
+<!--
+data Color = RGB Float Float Float | HSV Hue Saturation Value
+  deriving (Eq,Show,Read)
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #007020; font-weight: bold">data</span> <span style="color: #902000">Color</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">RGB</span> <span style="color: #902000">Float</span> <span style="color: #902000">Float</span> <span style="color: #902000">Float</span> <span style="color: #666666">|</span> <span style="color: #902000">HSV</span> <span style="color: #902000">Hue</span> <span style="color: #902000">Saturation</span> <span style="color: #902000">Value</span>
+  <span style="color: #007020; font-weight: bold">deriving</span> (<span style="color: #902000">Eq</span>,<span style="color: #902000">Show</span>,<span style="color: #902000">Read</span>)
+</pre></div><!--END-->
+Mit der obigen Definition ist es z.B. möglich einen Wert des Typs <code>Color</code> mittels <code class="fName">show</code> in einen String umzuwandeln und mit <code class="fName">read</code> wieder zurück umzuwandeln. Da <code>Color</code> auch Mitglied von <code>Eq</code> ist, können seine Werte auch auf Gleichheit geprüft werden. Zwei Werte gelten als gleich, wenn sie mit dem gleichen Konstruktor erzeugt wurden und die einzelnen Komponenten gleich sind (<code>red == red'</code> wäre <code>False</code>).
+Das Ableiten funktioniert nur, wenn alle Typausdrücke der Konstruktoren auch Mitglieder der Typklasse sind, für welche die Funktionen abgeleitet werden sollen. 
+</p>
+
+<p>
+Signaturen polymorpher Funktionen können mit Type Constraints ausgedrückt werden. Die Signatur einer Funktion, welche Listen mit Elementen beliebigen Typs sortiert, würde so aussehen:
+<!--
+mySort :: (Ord a) => [a] -> [a]
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">mySort</span> <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Ord</span> a) <span style="color: #007020; font-weight: bold">=&gt;</span> [a] <span style="color: #007020; font-weight: bold">-&gt;</span> [a]
+</pre></div><!--END-->
+Ein Bezeichner in einem Typausdruck, welcher mit einem Kleinbuchstaben beginnt, bezeichnet eine Typvariable. Der Ausdruck <code>[a]</code> steht für eine Liste mit Elementen vom Typ <code>a</code>, wobei <code>a</code> ein beliebiger Typ sein kann. Da man nur Listen sortieren kann, bei der eine Ordnung für die Elemente der Liste gegeben ist, muss <code>a</code> ein Mitglied der Typklasse <code>Ord</code> sein. Dies wird durch das Type Constraint <code>(Ord a) =></code> ausgedrückt.
+</p>
+
+<p>
+Weitere Informationen zu Typklassen gibt es auf <a href="https://en.wikibooks.org/wiki/Haskell/Classes_and_types">Haskell/Classes and types auf Wikibooks</a>.
+</p>
+
+
+<h3 id="hs-trace"><a href="#hs-trace">Tracing / Debugging</a></h3>
+<p>
+Mit der Funktion <code class="fName">trace</code>  können Strings zum Debuggen ausgegeben werden. Der erste Eingabeparameter ist der String, welcher ausgegeben werden soll und der zweite Eingabeparameter ist der Rückgabewert. Ein Wert beliebigen Typs kann mit der Funktion <code class="fName">show</code> in einen String umgewandelt werden, vorausgesetzt dieser Typ ist ein Mitglied der Typklasse <code>Show</code>.   
+</p>
+
+<p>
+In der Datei <code>Test.hs</code> sind ab dem Kommentar <code>--Tracing examples</code> Beispiele, wie man die Funktion konkret zum Tracen einer Funktion benutzen kann. Die Reihenfolge der Trace-Ausgabe hängt von der Reihenfolge ab, in der die Ausdrücke ausgewertet werden. Aufgrund der Evaluationsstrategie von Haskell (lazy evaluation) ist diese Reihenfolge nicht ganz offensichtlich. Für <code>reverse2 "abc"</code> stehen die Ausgaben <code>new res:</code> z.B. erst ganz am Ende.
+</p>
+
+<p>
+Zum Testen Ihres Codes für die Arbeitsblätter können Sie die Datei <code>AB/Testing.hs</code> verwenden und entsprechende <code>import</code>-Befehle hinzufügen. Dadurch kann vermieden werden, die <code>import</code>-Befehle in den Vorlagen für die Lösungen zu modifizieren.
+</p>
+
+<h3 id="hs-module"><a href="#hs-module">Module</a></h3>
+<p>
+Ein Modul entspricht einer hs-Datei. Der Modulname kann aus mehreren Teilen bestehen, welche durch <code>.</code> getrennt sind, z.B. <code>MyProject.ModuleSet1.ModuleName</code>. GHC würde dieses Modul standardmäßig in der Datei <code>MyProject/ModuleSet1/ModuleName.hs</code> erwarten, wobei dieser Pfad relativ zur hs-Datei ist, welche interpretiert bzw. kompiliert werden soll. 
+</p>
+
+<p>
+Ein Modul exportiert Funktionen, Typen, Konstruktoren und Typklassen. Wenn nichts spezifiziert ist, werden alle in diesem Modul definierten Entitäten exportiert. Alternativ kann man eine explizite Exportliste angeben, die benennt, welche Entitäten exportiert werden sollen. Alle Entitäten, welche nicht in dieser Liste enthalten sind, können nicht von außerhalb des Moduls benutzt werden (privat). Die <code>module</code>-Zeile sollte immer ganz am Anfang der hs-Datei stehen. Die zweite Zeile würde den Typen <code>MyType</code> mit Konstruktoren <code>ConsA</code> und <code>ConsB</code> und die Funktionen <code class="fName">fun1</code> und <code class="fName">fun2</code> exportieren.  
+<!--
+module MyModules.XyZ where
+module MyModules.XyZ (MyType(ConsA,ConsB), fun1, fun2) where
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #007020; font-weight: bold">module</span> <span style="color: #0e84b5; font-weight: bold">MyModules.XyZ</span> <span style="color: #007020; font-weight: bold">where</span>
+<span style="color: #007020; font-weight: bold">module</span> <span style="color: #0e84b5; font-weight: bold">MyModules.XyZ</span> (<span style="color: #902000">MyType</span>(<span style="color: #902000">ConsA</span>,<span style="color: #902000">ConsB</span>), <span style="color: #06287e">fun1</span>, <span style="color: #06287e">fun2</span>) <span style="color: #007020; font-weight: bold">where</span>
+</pre></div><!--END-->
+</p>
+
+<p>
+Zum Importieren von Modulen wird der Befehl <code>import</code> genutzt. Falls keine Importliste angegeben wird, werden alle Entitäten, welche das angegebene Modul exportiert, importiert. Die zweite Zeile würde nur den Datentypen <code>MyType</code> ohne Konstruktoren und die Funktion <code class="fName">fun2</code> importieren. 
+<!--
+import MyModules.XyZ
+import MyModules.XyZ (MyType,fun2)
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #007020; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">MyModules.XyZ</span>
+<span style="color: #007020; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">MyModules.XyZ</span> (<span style="color: #902000">MyType</span>,<span style="color: #06287e">fun2</span>)
+</pre></div><!--END-->
+
+Falls aus mehr als einem Modul Entitäten mit dem gleichen Namen importiert werden, dann müssen diese qualifiziert referenziert werden, z.B. <code>MyModules.XyZ.fun2</code>. Um dies zu verkürzen, können Aliase für die Module vergeben werden, z.B. <code>import MyModules.XyZ as Xy</code>. Dann kann die Funktion mit <code>Xy.fun2</code> referenziert werden. Weitere Optionen für das Importieren stehen im <a href="https://wiki.haskell.org/Import">Haskell-Wiki</a>. 
+</p>
+
+<h3 id="hs-learn"><a href="#hs-learn">Learn You a Haskell</a></h3>
+<a href="http://learnyouahaskell.com/chapters">Learn You a Haskell</a> ist ein Tutorial, welches leicht verständlich die Grundlagen von Haskell erklärt. Falls die obige Einführung nicht ausreicht, können Sie sich zusätzlich folgende Teile des Tutorials anschauen:
+<ul>
+  <li><a href="http://learnyouahaskell.com/starting-out">2. Starting Out</a></a></li>
+  <ul>
+    <li><a href="http://learnyouahaskell.com/starting-out#ready-set-go">Ready, set, go!</a></li>
+    <li><a href="http://learnyouahaskell.com/starting-out#babys-first-functions">Baby's first functions</a></li>
+    <li><a href="http://learnyouahaskell.com/starting-out#an-intro-to-lists">An intro to lists</a></li>
+    <li><a href="http://learnyouahaskell.com/starting-out#tuples">Tuples</a></li>
+  </ul>
+  <li><a href="http://learnyouahaskell.com/types-and-typeclasses">3. Types and Typeclasses</a></li>
+  <li><a href="http://learnyouahaskell.com/syntax-in-functions">4. Syntax in Functions</a></li>
+  <ul>  
+    <li><a href="http://learnyouahaskell.com/syntax-in-functions#pattern-matching">Pattern matching</a></li>
+    <li><a href="http://learnyouahaskell.com/syntax-in-functions#where">Where!?</a></li>
+  </ul>
+  <li><a href="http://learnyouahaskell.com/higher-order-functions">6. Higher Order Functions</a></li>
+  <ul>
+    <li><a href="http://learnyouahaskell.com/higher-order-functions#curried-functions">Curried functions</a></li>
+    <li><a href="http://learnyouahaskell.com/higher-order-functions#higher-orderism">Some higher-orderism is in order</a></li>
+    <li><a href="http://learnyouahaskell.com/higher-order-functions#maps-and-filters">Maps and filters</a></li>
+    <li><a href="http://learnyouahaskell.com/higher-order-functions#folds">Only folds and horses</a></li>
+  </ul>
+  <li><a href="http://learnyouahaskell.com/modules">7. Modules</a></li>
+  <ul>
+    <li><a href="http://learnyouahaskell.com/modules#loading-modules">Loading modulues</a></li>
+  </ul>
+  <li><a href="http://learnyouahaskell.com/making-our-own-types-and-typeclasses">8. Making Our Own Types and Typeclasses</a></li>
+  <ul>
+    <li><a href="http://learnyouahaskell.com/making-our-own-types-and-typeclasses#algebraic-data-types">Algebraic data types intro</a></li>
+    <li><a href="http://learnyouahaskell.com/making-our-own-types-and-typeclasses#type-synonyms">Type synonyms</a></li>
+  </ul>
+</ul>
+
+<!-- Interpreter -->
+<!-- show/read -->
+<!--<h2 id="splib"><a href="#splib">SPLib</a></h2>-->
+
+
+<h2 id="sp"><a href="#sp">sp-Programme</a></h2>
+<p>Ein sp-Programm besteht aus einer Menge von <b>Variablen</b> und <b>Operationen</b>. Eine Operation beschreibt, wie sich die Variablenwerte in einem Schritt verändern. Nach jeder Operation muss das Programm entscheiden, mit welcher Operation es weiter macht oder ob es anhalten (terminieren) soll. Dafür gibt es für jede Operation einen binären <b>Entscheidungsbaum</b>, dessen innere Knoten <b>Prädikate</b> sind und dessen Blätter Operationen. Ein Prädikat beschreibt eine Eigenschaft der Variablenwerte, z.B. ob zwei Variablen den gleichen Wert enthalten. Nach Ausführen einer Operation wird im entsprechendem Entscheidungsbaum ein Pfad zu einem Blatt ermittelt: falls ein Prädikat wahr ist, nimmt man das erste Kind, sonst das zweite. Das Blatt gibt die nächste Operation an oder dass das Programm anhalten soll. </p>
+
+<p>
+Die Ein- und Ausgabe von sp-Programmen funktioniert wie folgt. Man gibt an, welche Variablen Teil der Eingabe sind und welche Variable die Ausgabe. Alle Variablen, welche nicht Teil der Eingabe sind, gelten zu Beginn der Programmausführung als undefiniert (greift man auf eine undefinierte Variable zu, dann stürzt das Programm ab). Nachdem das Programm anhält, wird der Wert der Ausgabevariable zurückgegeben. Ein Programm kann mehr als eine <b>Funktion</b> berechnen, deshalb müssen für jede vom Programm berechnete Funktion Eingabe- und Ausgabevariablen separat angegeben werden.   
+</p>
+
+<h3>Syntax und Semantik</h3>
+<p>
+Nachfolgend wird das Beispiel im Order <code>example</code> betrachtet, um die Syntax und Semantik von sp-Programmen exemplarisch zu erklären.
+</p>
+
+<p>
+Die Datei <code>Breadth.hs</code> definiert einen Datentypen <code>Graph</code>, welcher ungerichtete Graphen beschreibt.  Es wird angenommen, dass die Knoten mit <code>1</code> bis <code>VertexCount</code> (= Anzahl der Knoten im Graph) beschriftet sind.
+<!--
+vertices  :: Graph -> [Vertex] 
+adjacent  :: Graph -> Vertex -> Vertex -> Bool 
+neighbors :: Graph -> Vertex -> [Vertex]
+->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">vertices</span>  <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Graph</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Vertex</span>] 
+<span style="color: #06287e">adjacent</span>  <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Graph</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Vertex</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Vertex</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span> 
+<span style="color: #06287e">neighbors</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Graph</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Vertex</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Vertex</span>]
+</pre></div><!--END-->
+Die Funktion <code class="fName">vertices</code> gibt eine Liste mit allen Knoten des Graphen zurück.<br> 
+Die Funktion <code class="fName">adjacent</code> gibt an, ob es eine Kante zwischen zwei Knoten gibt.<br>
+Die Funktion <code class="fName">neighbors</code> gibt eine Liste mit den Nachbarn eines Knotens zurück.
+
+<div class="fig">
+<img src="Res/ugraph.png" style="width:300px"><br>
+Darstellung von <code>testGraph</code> aus der Datei <code>Breadth.hs</code>
+</div>
+
+Am Ende der Datei <code>Breadth.hs</code> steht:
+<!--
+--START OF PROGRAM bfs
+--END OF PROGRAM bfs
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #60a0b0; font-style: italic">--START OF PROGRAM bfs</span>
+<span style="color: #60a0b0; font-style: italic">--END OF PROGRAM bfs</span>
+</pre></div><!--END-->
+Diese zwei Kommentare markieren, an welcher Stelle das sp-Programm aus der Datei <code>Breadth/bfs.sp</code> eingesetzt werden soll. Führen Sie den Befehl <code>spc Breadth.hs</code> im Ordner <code>example</code> aus und öffnen Sie die Datei <code>Breadth.hs</code> erneut. Nun sollte der Code des sp-Programms dort stehen. Hinweis: steht etwas zwischen den zwei Kommentaren, wird beim Ausführen von <code>spc</code> der Inhalt dazwischen überschrieben. Öffnen Sie die Datei <code>Breadth.hs</code> mit dem Interpreter (Doppelklick oder <code>ghci Breadth.hs</code>) und lassen Sie folgende Ausdrücke auswerten:
+<ul>
+  <li><code>connected testGraph 7 10</code></li>
+  <li><code>connected testGraph 2 11</code></li>
+  <li><code>component testGraph 4</code></li>
+  <li><code>component testGraph 13</code></li>
+</ul>
+Die Funktion <code class="fName">connected</code> gibt an, ob es zwischen zwei Knoten einen Pfad gibt. Die Funktion <code class="fName">component</code> gibt die Liste aller Knoten zurück, welche von dem gegebenen Knoten aus erreicht werden können, also die Zusammenhangskomponente.
+</p>
+
+
+<p>
+Schauen wir uns nun das sp-Programm in der Datei <code>Breadth/bfs.sp</code> an, welches diese beiden Funktionen berechnet. Tipp: stellen Sie in Ihrem Editor Haskell Syntax-Highlighting für sp-Dateien ein. Ein sp-Programm besteht aus verschiedenen Abschnitten, welche durch eine Zeile beginnend mit einer Raute <code>#</code> eingeleitet werden. Die Reihenfolge der Abschnitte kann beliebig gewählt werden. </p>
+
+<p>Der erste Abschnitt (<code>#NAME</code>) in der Datei gibt den Namen des sp-Programms an. Der zweite Abschnitt (<code>#FUNCS</code>) gibt die Funktionen an, welche von dem Programm berechnet werden. In jeder Zeile steht eine Funktion (erstes Wort), gefolgt von einer Reihe von Variablen (Eingabeparameter) und dann ein Gleichheitszeichen gefolgt vom Namen der Ausgabevariable. Im dritten Abschnitt (<code>#VARS</code>) stehen die Variablen, welche das Programm nutzt. In jede Zeile steht der Variablenname gefolgt von <code>::</code> und dem Typen der Variable. Für Variablennamen und Typen gelten die gleichen Regeln wie in Haskell. Zusätzlich sollten Variablennamen in sp-Programmen nie mit einem Apostroph <code>'</code> oder einem Unterstrich <code>_</code> enden.
+</p>
+
+<p>
+Im vierten Abschnitt (<code>#PREDS</code>) stehen die Prädikate. Ein Prädikat besteht aus einem Namen (links vom <code>=</code>) und Ausdruck (rechts vom <code>=</code>). Der Ausdruck kann die Variablen des Programms enthalten. Ein Ausdruck eines Prädikats kann auch über mehrere Zeilen gehen; in diesem Fall müssen die Zeilen durch Leerzeichen mehr eingerückt sein als der Anfang vom Prädikatnamen. Prädikatnamen sollten stets mit dem Präfix <code>p_</code> beginnen und nur aus alphanumerischen Zeichen und Unterstrich bestehen. 
+</p>
+
+<p>
+Im fünften Abschnitt (<code>#OPS</code>) stehen die Operationen. Eine Operation besteht aus einem Namen gefolgt von einem <code>:</code> und einer Reihe von Zuweisungen in den folgenden Zeilen. Die Zuweisungen müssen mehr eingerückt sein als der Operationsname. Bei einer Zuweisungen steht links vom <code>=</code> der Name der Variable und rechts davon der Ausdruck. Der Ausdruck kann wie beim Prädikat über mehrere Zeilen gehen. Bei einer Zuweisung wird unterschieden zwischen dem Variablenwert einer Variable <b>nach</b> Ausführung der Operation und <b>davor</b>. Der Variablenwert nach Ausführung wird durch Anhängen eines Apostrophs <code>'</code> gekennzeichnet. Das heißt, links vom <code>=</code> muss an die Variablennamen immer ein Apostroph angehängt werden (Variablennamen mit Apostroph können auch auf der rechten Seite vorkommen, d.h. der neue Wert der Variable soll genommen werden). Es gibt jedoch folgende Ausnahme. Es ist möglich Helfervariablen zu definieren, welche nicht Teil der Programmvariablen sind. Solche Helfervariablen haben kein Apostroph am Ende. Zum Beispiel sind die Variablen <code>cur</code> und <code>notVisitedYet</code> in der Operation <code>o_visit</code> Helfervariablen. Helfervariablen sind nur gültig innerhalb der Operation, in der sie vorkommen. Es ist auch möglich, dass eine Operation keine Zuweisungen enthält, siehe z.B. die Operation <code>o_nop</code>. Bei solchen Operationen verändert sich der Wert der Variablen nicht. 
+Operationsnamen sollten stets mit dem Präfix <code>o_</code> beginnen und wie Prädikatnamen nur aus alphanumerischen Zeichen und Unterstrich bestehen. 
+</p>
+
+<p>
+Im sechsten Abschnitt (<code>#FLOW</code>) stehen die Entscheidungsbäume für jede Operation. Links vom <code>=</code> steht der Operationsname und rechts davon der Baum. Ein Entscheidungsbaum ist rekursiv definiert:
+<ul>
+<li><code>(p_name x y)</code> ist ein Entscheidungsbaum, wobei <code>p_name</code> ein Prädikat ist und <code>x</code>, <code>y</code> Entscheidungsbäume sind. <code>x</code> wird gewählt, falls das Prädikat <code>p_name</code> wahr ist, ansonsten <code>y</code></li>
+<li><code>o_name</code> ist ein Entscheidungsbaum, wobei <code>o_name</code> eine Operation ist</li>
+<li><code>HALT</code> ist ein Entscheidungsbaum</li>
+</ul> 
+Es muss für jede Operation ein Entscheidungsbaum definiert werden.
+</p>
+
+<p>
+Die Syntax für mehrzeilige Kommentare <code>{- ... -}</code> ist in sp-Programmen nicht gültig. Außerdem sollten keine Tabulatorzeichen verwendet werden.
+</p>
+
+<h3>Tracing</h3>
+<p>
+Um jeden Ausführungsschritt eines sp-Programms für eine bestimmte Eingabe zu sehen, muss das Tracing für dieses sp-Programm aktiviert werden. Ganz am Ende der Datei <code>SPLib/Basic.hs</code> können Sie einstellen, welche Programme getract werden sollen. Es gibt die Möglichkeit dies über eine Whitelist (nur die Programme, dessen Name in der Liste ist) oder Blacklist (nur die Programme, dessen Name nicht in der Liste ist) zu machen. Ändern Sie die Zeile <code>    whiteList = []</code> zu <code>whiteList = ["bfs"]</code>. Öffnen Sie die Datei <code>Breadth.hs</code> nochmal mit dem Interpreter und lassen Sie die vorherigen 4 Ausdrücke auswerten. Nun wird zusätzlich die Trace ausgegeben. Außerdem wird für jeden Aufruf der Funktion <code class="fName">component</code> nun ein Fehler <code>*** Exception: Prelude.undefined</code> ausgegeben. In den letzten beiden Absätzen wird erklärt, wieso es zu diesem Fehler kommt und wie man ihn behebt. 
+</p>
+
+<p>
+Traces können wie folgt in eine Datei geschrieben werden. Führen Sie den Befehl <code>ghci 2>Breadth/myTrace.tr Breadth.hs</code> im Ordner <code>example</code> aus. Dies führt dazu, dass der Stream <code>stderr</code>, welche die Traceausgabe enthält, in die Datei <code>Breadth/myTrace.tr</code> geschrieben wird. Lassen Sie nochmal die vorherigen 4 Ausdrücke auswerten und beenden Sie den Interpreter anschließend mit <code>:q</code>. Führen Sie nun den Befehl <code>spc Breadth/myTrace.tr</code> aus. Aufgrund der Dateiendung <code>.tr</code> interpretiert das Programm die Datei als Trace und wandelt es in csv-Dateien (eine für jeden Funktionsaufruf) um. Diese sind im Ordner <code>Breadth/myTrace</code> zu finden. 
+</p>
+
+<p>
+Öffnen Sie die Datei <code>Breadth/myTrace/1.csv</code> (Trennzeichen ist <code>;</code> und Zeichenketten-Trenner <code>"</code>). In Zelle A1 steht der Namen der Funktion, die aufgerufen wurde, und in A2 der Name des Programms. 
+Ab der vierten Zeile beginnt die Trace. In der ersten Spalte steht der Operationsname. Danach kommen die Werte der Variablen nach Ausführung der Operation. Danach folgt die Sequenz von Prädikaten, welche im Entscheidungsbaum durchlaufen wurden; die 0 (bzw. 1) in Klammern heißt, dass das Prädikat falsch (bzw. wahr) ist. Danach kommt der Name der nächsten Operation oder HALT. Falls andere sp-Programme aufgerufen werden, enthält die Spalte <code>calls</code> den Namen der Trace-Dateien für diese Aufrufe. Ganz am Ende stehen unter <code>Other trace lines</code> Fehlermeldungen, die während der Ausführung aufgetreten sind. 
+</p>
+
+<p>
+In der Datei <code>Breadth/myTrace/3.csv</code> kann man sehen, dass ein Fehler bei der Ausführung aufgetreten ist. Eine Konsequenz davon ist, dass der vierte Funktionsaufruf fälschlicherweise als Unterprogrammaufruf vom dritten gewertet und die zugehörige Datei <code>3-1.csv</code> anstatt <code>4.csv</code> heißt. Der Fehler tritt beim Ausführen der Operation <code>o_res</code> auf. Diese setzt die Variable <code>res</code> auf wahr gdw. die Liste der besuchten Knoten den Knoten <code>v</code> enthält. Die Variable <code>v</code> ist jedoch undefiniert, wenn die Funktion <code>component</code> aufgerufen wird, da sie nicht Teil der Eingabe ist. Dementsprechend versucht der Interpreter einen Ausdruck auszuwerten, bei dem einer der Werte <code>undefined</code> ist, was zu einem Fehler führt. 
+</p>
+
+<p>
+<u>Hinweis zur Fehlerbehebung</u>: falls die Ausführung eines sp-Programms einen Fehler verursacht, kann das an einer Operation oder einem Prädikat liegen. Falls es an einer Operation liegt, dann ist es jene Operation, welche in der letzten Zeile der Trace in der Spalte "Next Operation" steht.  
+</p>
+
+<p>
+Wieso ist dieser Fehler nicht aufgetreten, als das Tracing noch nicht aktiviert war? Der Grund hierfür ist die Auswertungsstrategie von Haskell (lazy evaluation), bei der ein Ausdruck erst auswertet wird, sobald er benötigt wird. Ohne Tracing würde die Variable <code>res</code> beim Aufruf der Funktion <code>component</code> niemals verwendet werden und entsprechend würde der problematische Ausdruck nie ausgewertet werden. Beim Tracing müssen jedoch nach jedem Schritt die Werte der Variablen ermittelt werden, um diese in der Trace anzeigen zu können (dies führt zu einer strikten Auswertung (eager evaluation)). 
+</p>
+
+<p>
+Wie kann dieser Fehler vermieden werden? Es gibt die Möglichkeit, Variablen nicht in der Trace auszugeben. Dazu muss ein <code>!</code> vor den Variablennamen im <code>#VARS</code> Abschnitt geschrieben werden. In diesem Fall also <code>!res :: Bool</code>. Dies kann auch dazu genutzt werden, um Variablen auszublenden, dessen Typ nicht als String dargestellt werden können (z.B. Funktionen) und deshalb beim Tracing auch zu einem Fehler führen würden. Passen Sie die Datei <code>bfs.sp</code> entsprechend an, kompilieren Sie die hs-Datei erneut (<code>spc Breadth.hs</code>) und generieren Sie nochmal die tr-Datei für die vier Funktionsaufrufe und wandeln Sie diese in csv-Dateien um. Nun ist das Problem behoben.
+</p>
+
+<h2 id="abgabe"><a href="#abgabe">Hinweise zu Abgaben</a></h2>
+<p>Für die Abgabe eines Arbeitsblatts ABi schicken Sie bitte alle dazugehörigen Dateien <code>ABi_j.hs</code> und alle Ordner <code>ABi_j</code> als zip-Archiv per E-Mail mit dem Betreff "<b>Abgabe ABi</b>" an <a href="mailto:sysprog@thi.uni-hannover.de">sysprog@thi.uni-hannover.de</a>. <span style="color:red">Die zip-Datei soll nur hs- und sp-Dateien enthalten!</span> Falls es für eine Datei <code>ABi_j.hs</code> keinen gleichnamigen Ordner gibt, heißt dies, dass Sie auch keine sp-Programme verwenden dürfen.</p>
+
+<p>
+Bevor die Dateien <code>ABi_j.hs</code> getestet werden, werden sie zuerst mit <code>spc</code> kompiliert (sollten keine sp-Programme enthalten sein, dann verändert sich nichts). Anschließend durchläuft Ihre Abgabe eine Reihe von Testfällen. Falls alle Tests erfolgreich sind, wird Ihnen dies mitgeteilt und es erfolgt anschließend eine mündliche Abnahme mit allen Gruppenmitgliedern per Videochat. Alle Gruppenmitglieder müssen alle Fragen bezüglich des Codes beantworten können. Nach erfolgreicher mündlicher Abnahme gilt ein Arbeitsblatt als bestanden.</p>
+
+<p>
+Wenn beim Testen oder bei der Abnahme ein Fehler in der Abgabe festgestellt wird, dann gilt die Abgabe als <b>Fehlversuch</b> (siehe dazu die Datei <code>regelung.pdf</code> im StudIP). Falls alle Testfälle nicht innerhalb eines großzügigen Zeitlimits durchlaufen, gilt dies ebenfalls als Fehlversuch.
+</p>
+</div>
+</body>
+</html>

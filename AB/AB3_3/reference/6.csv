@@ -1,0 +1,10 @@
+egyptMult'
+egyptMult
+Operation;a;b;c;i;r;Predicate Sequence;Next Operation;Calls;Source Line No
+o_init;3;25;3;25;3;p_end(0) -> p_even(0) -> p_addOdd(0);o_skipOdd;;67
+o_skipOdd;;;6;12;;p_end(0) -> p_even(1) -> p_addEven(0);o_skipEven;;72
+o_skipEven;;;12;6;;p_end(0) -> p_even(1) -> p_addEven(1);o_addEven;;77
+o_addEven;;;24;3;27;p_end(0) -> p_even(0) -> p_addOdd(1);o_addOdd;;82
+o_addOdd;;;48;1;75;p_end(1);HALT;;87
+
+Other trace lines

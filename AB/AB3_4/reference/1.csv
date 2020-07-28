@@ -1,0 +1,24 @@
+csm'
+csmAlg
+Operation;ca;cb;l;oa;ob;r;x;Predicate Sequence;Next Operation;Calls;Source Line No
+o_init;0;0;undefined;0;0;undefined;(["abab","ab","ab","ab"],["ab","aba","bab","ab"]);p_eqlen(1) -> p_empty(0);o_nop;;2
+o_nop;;;;;;;;p_aleq(0);o_blen;;6
+o_blen;;;2;;;;;p_ss(1);o_asbn;;9
+o_asbn;;1;;2;;;;;o_nop;;12
+o_nop;;;;;;;;p_aleq(1);o_alen;;14
+o_alen;;;;;;;;p_ss(1) -> p_fc(0) -> p_eob(0);o_anbs;;17
+o_anbs;1;;;0;2;;;;o_nop;;22
+o_nop;;;;;;;;p_aleq(0);o_blen;;24
+o_blen;;;1;;;;;p_ss(1);o_asbn;;27
+o_asbn;;2;;1;0;;;;o_nop;;30
+o_nop;;;;;;;;p_aleq(1);o_alen;;32
+o_alen;;;;;;;;p_ss(1) -> p_fc(0) -> p_eob(0);o_anbs;;35
+o_anbs;2;;;0;1;;;;o_nop;;40
+o_nop;;;;;;;;p_aleq(1);o_alen;;42
+o_alen;;;2;;;;;p_ss(1) -> p_fc(0) -> p_eob(1);o_anbn;;45
+o_anbn;3;3;;;0;;;;o_nop;;50
+o_nop;;;;;;;;p_aleq(1);o_alen;;52
+o_alen;;;;;;;;p_ss(1) -> p_fc(1);o_yes;;55
+o_yes;;;;;;True;;;HALT;;59
+
+Other trace lines

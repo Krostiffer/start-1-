@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>[SP20][AB3] Imperative Programme</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<link rel="stylesheet" type="text/css" href="Res/style.css">
+</style>
+</head>
+<body>
+<div id="header">
+<span style="font-weight:bold;">
+Systematisches Programmieren 
+<span style="float:right;">Sommersemester 2020</span><br>
+Dr. Maurice Chandoo
+<span style="float:right;">Leibniz Universität Hannover</span><br>
+</span>
+</div>
+
+<div id="navi">
+<div style="float: left"><a href="AB2.html">&#10094; AB2</a></div>
+<div style="float: right"><a href="AB4.html">AB4 &#10095;</a></div>
+<div style="margin: 0 auto;width:inherit;text-align:center;">
+<a href="#part1">Teil 1</a>
+<a href="#part2">Teil 2</a>
+<a href="#part3">Teil 3</a>
+<a href="#part4">Teil 4</a>
+<a href="#part5">Teil 5</a>
+</div>
+</div>
+
+<div id="body2" style="margin-bottom:40vh">
+<h1><span class="abTag">AB3</span> Imperative Programme</h1>
+
+Implementieren Sie die folgenden Funktionen nur unter Verwendung der bereits importierten Funktionen. Folgende Sprachkonstrukte dürfen nicht verwendet werden:
+
+<ul>  
+  <li><code>if ... then ... else ...</code> (benutzen Sie stattdessen <code class="fName">if'</code> sofern importiert)</li>
+  <li><a href="http://learnyouahaskell.com/syntax-in-functions#guards-guards">Guards</a></li>
+  <li><a href="http://learnyouahaskell.com/starting-out#im-a-list-comprehension">List Comprehensions</a>: <code>[(i,j) | i <- [1,2], j <- [3,4]]</code></li>
+</ul>
+
+<h2><a href="https://www.youtube.com/watch?v=bmyr2Rwiy7w">🎦 Spuren-basierte Programmierung</a></h2>
+<p>Bei der spuren-basierten Programmierung wird ein Programm schrittweise aus Ausführungsspuren konstruiert. Zuerst wird der zu implementierende Algorithmus per Hand ausgeführt. Diese Ausführung wird dann in eine Tabelle übersetzt, bei welcher die Spalten mit den Variablen des Programms beschriftet sind und jede Zeile einem Ausführungsschritt entspricht. Anschließend müssen Operationen angegeben werden, welche die Veränderung der Werte in jeder Zeile beschreiben. Daraus kann dann der Kontrollflussgraph des Programms abgeleitet werden. Zum Schluss muss für jede Operation ein Entscheidungsbaum angegeben werden, der beschreibt, mit welcher Operation das Programm als nächstes fortfahren soll. Die Struktur von Programmen, welche mithilfe dieser Methode entwickelt werden, entspricht dem Aufbau von sp-Programmen. 
+</p>
+<p>Ab Teil 2 geht es darum, gegebene sp-Programme zu vervollständigen. Gewisse Informationen, wie z.B. Ausführungsspuren in Form von Tabellen, sind dabei schon gegeben. Sie können Teile der Methode anwenden, um die Lücken entsprechend auszufüllen.</p>
+
+<h2 id="part1"><a href="#part1">Teil 1: Kontrollstrukturen</a></h2>
+<!--
+type Operation a = (a -> a)
+type Predicate a = (a -> Bool)
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">Operation</span> a <span style="color: #007020; font-weight: bold">=</span> (a <span style="color: #007020; font-weight: bold">-&gt;</span> a)
+<span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">Predicate</span> a <span style="color: #007020; font-weight: bold">=</span> (a <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>)
+</pre></div><!--END-->
+
+Der Zustand eines Programms ist gegeben durch die Werte der Variablen, welche in dem Programm vorkommen. Dieser Zustand wird durch die Typvariable <code>a</code> repräsentiert.<br>
+
+Eine <b>Operation</b> verändert den Zustand des Programms. Ein Beispiel für eine Operation ist eine Zuweisung (Wert einer Variable wird neu festgelegt).<br>
+
+Ein <b>Prädikat</b> gibt an, ob der Zustand des Programms eine gewisse Eigenschaft aufweist, z.B. ob eine Variable größer als 0 ist. Prädikate kommen in Kontrollstrukturen vor, um den Kontrollfluss des Programms zu steuern.<br>
+
+Ein Programm kann als eine große Operation gesehen werden, welche durch Kombinieren von Operationen mithilfe von Kontrollstrukturen und Prädikaten entsteht. 
+
+<!--
+if2     :: (Predicate a) -> (Operation a) -> (Operation a)
+while   :: (Predicate a) -> (Operation a) -> (Operation a) 
+repeat  :: Int -> (Operation a) -> (Operation a)
+foreach :: [b] -> (Operation (a,b)) -> (Operation a) 
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">if2</span>     <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Predicate</span> a) <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Operation</span> a) <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Operation</span> a)
+<span style="color: #06287e">while</span>   <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Predicate</span> a) <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Operation</span> a) <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Operation</span> a) 
+<span style="color: #06287e">repeat</span>  <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Operation</span> a) <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Operation</span> a)
+<span style="color: #06287e">foreach</span> <span style="color: #007020; font-weight: bold">::</span> [b] <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Operation</span> (a,b)) <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Operation</span> a) 
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">if2</code> bekommt ein Prädikat <code>arg1</code> und eine Operation <code>arg2</code> als Parameter und soll folgende Operation zurückgeben. Falls <code>arg1</code> wahr ist, dann wird <code>arg2</code> ausgeführt, ansonsten bleibt der Zustand des Programms unverändert.<br>
+
+Die Funktion <code class="fName">while</code> soll folgende Operation zurückgeben. Solange das Prädikat <code>arg1</code> wahr ist, wird die Operation <code>arg2</code> wiederholt ausgeführt. Wenn das Prädikat <code>arg1</code> nicht wahr ist, dann wird der Zustand des Programms zurückgegeben.<br>
+
+Die Funktion <code class="fName">repeat</code> soll folgende Operation zurückgeben. Es wird <code>arg1</code>-mal <code>arg2</code> ausgeführt.<br>
+
+Die Funktion <code class="fName">foreach</code> soll folgende Operation zurückgeben. Für jedes Element der Liste <code>arg1</code> soll die Operation <code>arg2</code> ausgeführt werden. Die Operation <code>arg2</code> bekommt zusätzlich zum Programmzustand auch das Element der Liste übergeben. Die Liste wird in ihrer natürlichen Reihenfolge durchlaufen.
+ 
+<!--
+endRecursion :: (Operation a) -> (Operation a) -> (Predicate a) -> (Operation a)
+--> 
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">tailRecursion</span> <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Operation</span> a) <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Operation</span> a) <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Predicate</span> a) <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Operation</span> a)
+</pre></div><!--END-->
+
+Eine Funktion \(f \colon a \rightarrow a \) lässt sich als einfache Endrekursion ausdrücken, falls es Funktionen \(g,h \colon a \rightarrow a\) und \(p \colon a \rightarrow \{0,1\} \) gibt, sodass gilt 
+$$ f(x) = \begin{cases} g(x) & \text{, falls } p(x) = 0 \\ f(h(x))  & \text{, falls } p(x) = 1  \end{cases} $$ 
+Definieren Sie die Funktion <code class="fName">tailRecursion</code> nur mithilfe der Funktionen <code class="fName">while</code> und <code class="fName">(.)</code> (Komposition <code>(f.g) x = f(g(x))</code>). Es soll gelten <code>arg1</code> \(=g\), <code>arg2</code> \(=h\) und <code>arg3</code> \(=p\).
+
+<!--
+primitiveSort lst = (while (not.isEmpty.?) ?) lst 
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">primitiveSort</span> lst <span style="color: #007020; font-weight: bold">=</span> (while (not<span style="color: #666666">.</span>isEmpty<span style="color: #666666">.?</span>) <span style="color: #666666">?</span>) lst 
+</pre></div><!--END-->
+
+Definieren Sie die Funktion <code class="fName">primitiveSort</code> indem Sie die '?' in obigem Code-Snippet entsprechend ersetzen.
+
+<!--
+bubbleSort :: (Ord a) => (Operation [a])
+swapPred   :: (Ord a) => (Predicate ([a],Int))
+swapOp     :: (Ord a) => (Operation ([a],Int))
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">bubbleSort</span> <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Ord</span> a) <span style="color: #007020; font-weight: bold">=&gt;</span> (<span style="color: #902000">Operation</span> [a])
+<span style="color: #06287e">swapPred</span>   <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Ord</span> a) <span style="color: #007020; font-weight: bold">=&gt;</span> (<span style="color: #902000">Predicate</span> ([a],<span style="color: #902000">Int</span>))
+<span style="color: #06287e">swapOp</span>     <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Ord</span> a) <span style="color: #007020; font-weight: bold">=&gt;</span> (<span style="color: #902000">Operation</span> ([a],<span style="color: #902000">Int</span>))
+</pre></div><!--END-->
+
+Mithilfe der obigen Kontrollstrukturen soll BubbleSort implementiert werden. Dabei wird eine Liste mit \(n\) Elementen sortiert, indem folgendes \(n-1\) wiederholt wird. Man durchläuft jedes benachbarte Paar der Liste und falls das linke Element größer ist als das rechte, dann werden die beiden vertauscht. Achten Sie darauf, dass die Funktion auch für leere Listen funktioniert.<br>
+
+Die '?' in folgendem Code-Snippet müssen entsprechend ersetzt und die Funktionen <code class="fName">swapPred</code> und <code class="fName">swapOp</code> entsprechend definiert werden.  
+
+<!--
+bubbleSort lst = program ?
+  where
+    n = length lst
+    program = 
+        (repeat ?
+          (foreach ?
+            (if2 ? ?)      
+          )
+        )
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">bubbleSort</span> lst <span style="color: #007020; font-weight: bold">=</span> program <span style="color: #666666">?</span>
+  <span style="color: #007020; font-weight: bold">where</span>
+    n <span style="color: #007020; font-weight: bold">=</span> length lst
+    program <span style="color: #007020; font-weight: bold">=</span> 
+        (repeat <span style="color: #666666">?</span>
+          (foreach <span style="color: #666666">?</span>
+            (if2 <span style="color: #666666">?</span> <span style="color: #666666">?</span>)      
+          )
+        )
+</pre></div><!--END-->
+
+
+
+<h2 id="part2"><a href="#part2">Teil 2: BubbleSort</a></h2>
+
+<p>Die vorherige Version von BubbleSort kann mithilfe folgender Beobachtung erweitert werden, sodass der Algorithmus in bestimmten Fällen nach weniger Schritten terminiert. Wenn während einer Iteration keine zwei Elemente vertauscht werden, dann ist die Liste sortiert.</p>
+
+<p>Implementieren Sie den erweiterten Algorithmus indem Sie die '?' in der Datei <code>AB3_2/bubbleSort.sp</code> entsprechend ersetzen. Die Trace, welche bei Ausführung der Funktion <code class="fName">main</code> erzeugt wird, muss identisch sein zu <code>AB3_2/reference.tr</code>.</p>
+
+<h2 id="part3"><a href="#part3">Teil 3: Ägyptische Multiplikation</a></h2>
+Bei der ägyptischen Multiplikation (auch bekannt als russische Bauernmultiplikation) werden zwei natürliche Zahlen \(a\) und \(b\) multipliziert indem die Zahl \(a\) wiederholt verdoppelt und addiert wird. Beispiele (leere Zelle = Wert unverändert):
+
+<div class="fig">
+<table class="egyptTable">
+ <tr style="text-align:center"><th colspan="3">\(a\)=5, \(b\)=16</th></tr>
+ <tr style="text-align:center"><th>\(i\)</th><th>\(c\)</th><th>\(r\)</th></tr>
+ <tr><td>16</td><td>5</td><td>0</td></tr>
+ <tr><td>8</td><td>10</td><td></td></tr>
+ <tr><td>4</td><td>20</td><td></td></tr>
+ <tr><td>2</td><td>40</td><td></td></tr>
+ <tr><td>1</td><td>80</td><td>80</td></tr>
+</table> 
+
+<table class="egyptTable">
+ <tr style="text-align:center"><th colspan="3">\(a\)=7, \(b\)=11</th></tr>
+ <!--<tr style="text-align:center"><th>i</th><th>c</th><th>r</th></tr>-->
+ <tr style="text-align:center"><th>\(i\)</th><th>\(c\)</th><th>\(r\)</th></tr>
+ <tr><td>11</td><td>7</td><td>7</td></tr>
+ <tr><td>5</td><td>14</td><td>21</td></tr>
+ <tr><td>2</td><td>28</td><td></td></tr>
+ <tr><td>1</td><td>56</td><td>77</td></tr>
+</table>  
+</div>
+
+Die Zahl \(c\) wird auf \(r\) addiert, falls \(i\) ungerade ist. Die Sequenz der Werte, welche \(i\) annimmt, beschreiben die Binärdarstellung von \(b\) (gerade=0, ungerade=1).<br>
+
+Implementieren Sie den obigen Algorithmus indem Sie die '?' in der Datei <code>AB3_3/egyptMult.sp</code> entsprechend ersetzen. Die Trace, welche bei Ausführung der Funktion <code class="fName">main</code> erzeugt wird, muss identisch sein zu <code>AB3_3/reference.tr</code>. Sie können davon ausgehen, dass \(a, b \geq 0\).
+
+<details>
+<summary>Tipp</summary>
+Der Kontrollfluss (der #FLOW-Abschnitt in der sp-Datei) kann aus den Prädikatsequenzen der Referenz-Traces zum Teil rekonstruiert werden. Eine solche Sequenz entspricht dabei einem Pfad durch den Entscheidungsbaum.  
+</details>
+
+<h2 id="part4"><a href="#part4">Teil 4: Confidential String Matching</a></h2>
+
+Beim Confidential String Matching Problem sind zwei Listen von Strings <code>a</code> und <code>b</code> gegeben und es soll geprüft werden, ob <code>concat a == concat b</code>. Zum Beispiel gilt das für <code>a = ["ab","cde"]</code> und <code>b = ["a","bc","de"]</code>, da beide <code>"abcde"</code> ergeben. Allerdings sind die Strings in <code>a</code> und <code>b</code> vertraulich. Deshalb kann nur indirekt auf die beiden Listen zugegriffen werden:
+
+<!--
+coa  :: CSMInstance -> Int
+cob  :: CSMInstance -> Int
+lena :: CSMInstance -> Int -> Int
+lenb :: CSMInstance -> Int -> Int
+ssc  :: CSMInstance -> Int -> Int -> Int -> Int -> Int -> Bool
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">coa</span>  <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">CSMInstance</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+<span style="color: #06287e">cob</span>  <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">CSMInstance</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+<span style="color: #06287e">lena</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">CSMInstance</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+<span style="color: #06287e">lenb</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">CSMInstance</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+<span style="color: #06287e">ssc</span>  <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">CSMInstance</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">coa</code> (= cardinality of a) gibt die Anzahl der Strings in <code>a</code> zurück (analog dazu <code class="fName">cob</code> für <code>b</code>).<br>
+
+Die Funktion <code class="fName">lena</code> (= length of element of a) gibt die Länge des (<code>arg1</code>+1)-ten Strings in <code>a</code> zurück (analog dazu <code class="fName">lenb</code> für <code>b</code>).<br>
+
+Die Funktion <code class="fName">ssc</code> (= substring call) ist wahr gdw. wenn zwei Teilstrings aus <code>a</code> und <code>b</code> gleich sind. Genauer gesagt: <code>ssc (CSMInstance a b) ca cb oa ob l</code> ist wahr gdw. die ersten <code>l</code> Zeichen der Teilstrings <code>a'</code> und  <code>b'</code> gleich sind, wobei <code>a'</code> der Teilstring vom (<code>ca</code>+1)-ten String aus <code>a</code> ist, welcher ab dem (<code>oa</code>+1)-tem Zeichen anfängt (analog dazu <code>b'</code> für <code>cb</code>).<br>
+
+<div class="fig">
+<img src="Res/csmEx.png" style="width:600px">
+</div>
+
+Implementieren Sie den durch das obige Bild beschriebenen Algorithmus, indem Sie die '?' in der Datei <code>AB3_4/csmAlg.sp</code> entsprechend ersetzen. Die Trace, welche bei Ausführung der Funktion <code class="fName">main</code> erzeugt wird, muss identisch sein zu <code>AB3_4/reference.tr</code>. Außerdem müssen Sie Funktionen in der Datei <code>AB3_4.hs</code> implementieren, mit welchen Sie die Prädikate <code>p_eqlen</code> und <code>p_empty</code> ausdrücken können.
+
+
+
+<h2 id="part5"><a href="#part5">Teil 5: Josephus-Problem</a></h2>
+
+Das Josephus-Problem ist wie folgt definiert (siehe auch <a href="https://www.youtube.com/watch?v=uCsD3ZGzMgE">Numberphile (Video)</a>). Es stehen \(n\) Personen im Kreis, welche von \(1\) bis \(n\) nummeriert sind. Am Anfang entfernt Person \(1\) ihren Nachbarn (Person \(2\)) aus dem Kreis. Danach entfernt der neue Nachbar von \(1\) (Person \(3\)) seinen Nachbarn (Person \(4\)) aus dem Kreis. Die nächste Person, die jemanden entfernt, ist dann \(5\). Dies wird solange wiederholt, bis nur noch eine Person übrig ist. Wie lautet die Nummer dieser Person? <br>
+
+Implementieren Sie den obigen Algorithmus indem Sie die '?' in der Datei <code>AB3_5/josephus.sp</code> entsprechend ersetzen. Die Trace, welche bei Ausführung der Funktion <code class="fName">main</code> erzeugt wird, muss identisch sein zu <code>AB3_5/reference.tr</code>.
+
+</div>
+</body>
+</html>

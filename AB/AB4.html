@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>[SP20][AB4] Endliche Automaten</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<link rel="stylesheet" type="text/css" href="Res/style.css">
+<script>
+var curSlide, totalSlides;
+
+function nextSlide() {
+  curSlide = (curSlide < totalSlides) ? (curSlide+1) : 1;
+  show();
+}
+
+function prevSlide() {
+  curSlide = (curSlide > 1) ? (curSlide-1) : totalSlides;
+  show();
+}
+
+function show() {
+  document.getElementById("pmkCurSlide").innerHTML = curSlide;
+  var x = document.getElementsByClassName("slide");
+  for (i = 1; i <= totalSlides; i++) {
+    x[(i-1)].style.display = "none";
+  }
+  x[curSlide-1].style.display = "block";
+}
+</script>
+</head>
+<body>
+<div id="header">
+<span style="font-weight:bold;">
+Systematisches Programmieren 
+<span style="float:right;">Sommersemester 2020</span><br>
+Dr. Maurice Chandoo
+<span style="float:right;">Leibniz Universität Hannover</span><br>
+</span>
+</div>
+
+<div id="navi">
+<div style="float: left"><a href="AB3.html">&#10094; AB3</a></div>
+<div style="float: right"><a href="AB5.html">AB5 &#10095;</a></div>
+<div style="margin: 0 auto;width:inherit;text-align:center;">
+<a href="#part1">Teil 1</a>
+<a href="#part2">Teil 2</a>
+<a href="#part3">Teil 3</a>
+<a href="#part4">Teil 4 (optional)</a>
+</div>
+</div>
+
+<div id="body2" style="margin-bottom:10vh">
+<h1><span class="abTag">AB4</span> Endliche Automaten</h1>
+
+Implementieren Sie die folgenden Funktionen nur unter Verwendung der bereits importierten Funktionen. Folgende Sprachkonstrukte dürfen nicht verwendet werden:
+
+<ul>  
+  <li><code>if ... then ... else ...</code> (benutzen Sie stattdessen <code class="fName">if'</code> sofern importiert)</li>
+  <li><a href="http://learnyouahaskell.com/syntax-in-functions#guards-guards">Guards</a></li>
+  <li><a href="http://learnyouahaskell.com/starting-out#im-a-list-comprehension">List Comprehensions</a>: <code>[(i,j) | i <- [1,2], j <- [3,4]]</code></li>
+</ul>
+
+
+<h2>Endliche Automaten</h2>
+<h3>DFA (Deterministic Finite Automata)</h3>
+Ein deterministischer endlicher Automat (wie bekannt aus der Vorlesung <i>Grundlagen der theoretischen Informatik</i>) besteht aus einem Alphabet \(\Sigma\), einer Menge von Zuständen \(Z\), einem Startzustand \(z_0 \in Z\), einer Menge von Endzuständen \(E \subseteq Z\) und einer totalen Überführungsfunktion \(\delta \colon Z \times \Sigma \rightarrow Z\). 
+<div class="fig">
+<img src="Res/dea2.png" alt="Quelle: Vorlesungsskript von H. Vollmer aus dem WiSe 19/20 zu GdThi auf S. 8" style="width:500px">
+</div>
+Der obige Automat hat das Alphabet \(\Sigma = \{a,b\}\), die Zustandsmenge \(Z = \{z_0,z_1,z_2,z_3\}\), Startzustand \(z_0\) und Endzustandsmenge \(E = \{z_3\}\). Für die Eingabe \(aaa\) durchläuft der Automat den Pfad von Zuständen \(z_0, z_1, z_2, z_3\) und akzeptiert die Eingabe, weil der letzte Zustand im Pfad ein Endzustand ist. Für Eingabe \(aaab\) durchläuft er die Zustände \(z_0, z_1, z_2, z_3, z_2\) und akzeptiert diese Eingabe nicht. Die Sprache \(L(M)\), die ein Automat \(M\) erkennt, ist die Menge aller Wörter über \(\Sigma\), welche von \(M\) akzeptiert werden.
+ 
+<h3>NFA (Non-deterministic Finite Automata)</h3> 
+Ein nicht-deterministischer Automat ist genauso definiert wie ein deterministischer, jedoch hat die Überführungsfunktion \(\delta\) die Signatur \(Z \times E \rightarrow \mathcal{P}(Z)\), wobei \(\mathcal{P}(Z)\) die Menge aller Teilmengen von \(Z\) bezeichnet. Das heißt, dass ein Zustand mehrere ausgehende Pfeile haben kann, welche das gleiche Symbol aus dem Alphabet enthalten. Es kann auch einen Zustand \(z\) und ein Symbol \(x\) geben, sodass es keinen ausgehenden Pfeil von \(z\) gibt, welcher mit \(x\) beschriftet ist (dies ist im DFA nicht möglich, da \(\delta\) total sein muss). 
+
+<div class="fig">
+<img src="Res/nea.png" alt="Quelle: Vorlesungsskript von H. Vollmer aus dem WiSe 19/20 zu GdThi auf S. 10" style="width:500px">
+</div>
+
+Der obige NFA \(M\) hat das Alphabet \(\Sigma = \{0,1\}\). Beim Ausführen des NFA für eine Eingabe \(x\) entsteht ein Baum \(T_x\), welcher die nicht-deterministischen Wahlmöglichkeiten beschreibt. Für die Eingabe \(0100\) und \(001\) entstehen folgende Bäume:
+
+<div class="fig" style="margin:auto;width:100%;">
+<table style="margin:auto"><tr style="vertical-align:top">
+<td><img src="Res/nea_t0100.png" style="width:300px"></td>
+<td>&nbsp; &nbsp; &nbsp; &nbsp;</td>
+<td><img src="Res/nea_t001.png" style="width:265px"></td>
+</tr>
+</table>
+</div>
+
+Ein NFA akzeptiert eine Eingabe \(x\) gdw. der Baum \(T_x\) ein Blatt mit Tiefe \(|x|\) enthält, welches ein Endzustand ist. Zum Beispiel akzeptiert der obige Automat die Eingabe \(0100\), weil es ein Blatt \(z_2\) mit Tiefe 4 gibt. Die Eingabe \(001\) wird nicht akzeptiert, weil es kein Blatt \(z_2\) mit Tiefe 3 gibt (nur mit Tiefe 2).
+ 
+<h3>Codierung von DFA &amp; NFA</h3>
+<!--
+type State       = String
+type StartState  = State
+type FinalStates = [State]
+type DeltaFun    = Map (State,Char) State
+type DeltaRel    = Map (State,Char) [State]
+
+data DFA = DFA StartState FinalStates DeltaFun
+data NFA = NFA StartState FinalStates DeltaRel
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">State</span>       <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">String</span>
+<span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">StartState</span>  <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">State</span>
+<span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">FinalStates</span> <span style="color: #007020; font-weight: bold">=</span> [<span style="color: #902000">State</span>]
+<span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">DeltaFun</span>    <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">Map</span> (<span style="color: #902000">State</span>,<span style="color: #902000">Char</span>) <span style="color: #902000">State</span>
+<span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">DeltaRel</span>    <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">Map</span> (<span style="color: #902000">State</span>,<span style="color: #902000">Char</span>) [<span style="color: #902000">State</span>]
+
+<span style="color: #007020; font-weight: bold">data</span> <span style="color: #902000">DFA</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">DFA</span> <span style="color: #902000">StartState</span> <span style="color: #902000">FinalStates</span> <span style="color: #902000">DeltaFun</span>
+<span style="color: #007020; font-weight: bold">data</span> <span style="color: #902000">NFA</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">NFA</span> <span style="color: #902000">StartState</span> <span style="color: #902000">FinalStates</span> <span style="color: #902000">DeltaRel</span>
+</pre></div><!--END-->
+ Es wird angenommen, dass \(\Sigma\) gleich dem Datentyp <code>Char</code> ist. Somit ist jeder <code>String</code> eine gültige Eingabe. Die Menge der Zustände \(Z\) ist implizit festgelegt als Bild von \(\delta\) zusammen mit dem Startzustand \(z_0\). Deshalb müssen \(\Sigma\) und \(Z\) bei der Definition eines Automaten in Code nicht angegeben werden. Falls die durch <code>DeltaFun</code> (bzw. <code>DeltaRel</code>) beschriebene Funktion nicht definiert ist für ein Tupel \((z,x)\), dann soll gelten \(\delta(z,x) = z_{\text{undef}}\) (bzw. \(\delta(z,x) = \emptyset\)) , wobei \( z_{\text{undef}}\) ein spezieller Zustand ist, der durch die Konstante <code>undefinedState</code> repräsentiert wird, und \(\emptyset\) die leere Menge.<br>
+ 
+<!--
+m1 = DFA "z0" ["z3"]
+  (fromList [
+    (("z0",'a'),"z1"),
+    (("z0",'b'),"z3"),
+    (("z1",'a'),"z2"),
+    (("z1",'b'),"z0"),
+    (("z2",'a'),"z3"),
+    (("z2",'b'),"z1"),
+    (("z3",'a'),"z0"),
+    (("z3",'b'),"z2")
+  ] ) 
+  
+m2 = NFA "z0" ["z2"]  
+  (fromList [
+    (("z0",'0'),["z0","z1"]),
+    (("z0",'1'),["z0"]),
+    (("z1",'0'),["z2"])
+  ])  
+-->
+<details>
+<summary>Beispiele</summary>
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">m1</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">DFA</span> <span style="color: #4070a0">&quot;z0&quot;</span> [<span style="color: #4070a0">&quot;z3&quot;</span>]
+  (fromList [
+    ((<span style="color: #4070a0">&quot;z0&quot;</span>,&#39;a&#39;),<span style="color: #4070a0">&quot;z1&quot;</span>),
+    ((<span style="color: #4070a0">&quot;z0&quot;</span>,&#39;b&#39;),<span style="color: #4070a0">&quot;z3&quot;</span>),
+    ((<span style="color: #4070a0">&quot;z1&quot;</span>,&#39;a&#39;),<span style="color: #4070a0">&quot;z2&quot;</span>),
+    ((<span style="color: #4070a0">&quot;z1&quot;</span>,&#39;b&#39;),<span style="color: #4070a0">&quot;z0&quot;</span>),
+    ((<span style="color: #4070a0">&quot;z2&quot;</span>,&#39;a&#39;),<span style="color: #4070a0">&quot;z3&quot;</span>),
+    ((<span style="color: #4070a0">&quot;z2&quot;</span>,&#39;b&#39;),<span style="color: #4070a0">&quot;z1&quot;</span>),
+    ((<span style="color: #4070a0">&quot;z3&quot;</span>,&#39;a&#39;),<span style="color: #4070a0">&quot;z0&quot;</span>),
+    ((<span style="color: #4070a0">&quot;z3&quot;</span>,&#39;b&#39;),<span style="color: #4070a0">&quot;z2&quot;</span>)
+  ] ) 
+  
+<span style="color: #06287e">m2</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">NFA</span> <span style="color: #4070a0">&quot;z0&quot;</span> [<span style="color: #4070a0">&quot;z2&quot;</span>]  
+  (fromList [
+    ((<span style="color: #4070a0">&quot;z0&quot;</span>,<span style="color: #4070a0">&#39;0&#39;</span>),[<span style="color: #4070a0">&quot;z0&quot;</span>,<span style="color: #4070a0">&quot;z1&quot;</span>]),
+    ((<span style="color: #4070a0">&quot;z0&quot;</span>,<span style="color: #4070a0">&#39;1&#39;</span>),[<span style="color: #4070a0">&quot;z0&quot;</span>]),
+    ((<span style="color: #4070a0">&quot;z1&quot;</span>,<span style="color: #4070a0">&#39;0&#39;</span>),[<span style="color: #4070a0">&quot;z2&quot;</span>])
+  ])  
+</pre></div><!--END-->
+</details>
+Die Automaten <code>m1</code> und <code>m2</code> entsprechen dem DFA und NFA von oben.
+
+<!--
+nextState  :: DFA -> State -> Char -> State 
+nextStates :: NFA -> State -> Char -> [State] 
+isUndefinedTransition :: DFA -> State -> Char -> Bool
+--> 
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">nextState</span>  <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">DFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">State</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Char</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">State</span> 
+<span style="color: #06287e">nextStates</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">NFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">State</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Char</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">State</span>] 
+<span style="color: #06287e">isUndefinedTransition</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">DFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">State</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Char</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>
+</pre></div>
+
+
+Die Funktion <code class="fName">nextState</code> gibt den nächsten Zustand vom DFA <code>arg1</code> in Zustand <code>arg2</code> beim Lesen vom Symbol <code>arg3</code> zurück. Falls nichts definiert wurde, gibt sie <code>undefinedState</code> zurück. Zum Beispiel gilt <code>(nextState m1 "z0" 'c') == undefinedState</code>.<br>
+
+Die Funktion <code class="fName">nextStates</code> gibt die nächsten möglichen Zustände vom NFA <code>arg1</code> in Zustand <code>arg2</code> beim Lesen vom Symbol <code>arg3</code> zurück. Falls nichts definiert wurde, wird die leere Liste zurückgegeben. Zum Beispiel gilt <code>(nextStates m2 "z1" '1') == []</code>.
+ 
+<!--
+-- a in {DFA, NFA}
+startState   :: a -> State  
+isFinalState :: a -> State -> Bool    
+states       :: a -> [State] 
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #60a0b0; font-style: italic">-- a in {DFA, NFA}</span>
+<span style="color: #06287e">startState</span>   <span style="color: #007020; font-weight: bold">::</span> a <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">State</span>  
+<span style="color: #06287e">isFinalState</span> <span style="color: #007020; font-weight: bold">::</span> a <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">State</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>    
+<span style="color: #06287e">states</span>       <span style="color: #007020; font-weight: bold">::</span> a <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">State</span>] 
+</pre></div>
+
+
+Die Funktion <code class="fName">startState</code> gibt den Startzustand eines Automaten zurück.<br>
+Die Funktion <code class="fName">isFinalState</code> gibt zurück, ob <code>arg2</code> ein Endzustand in <code>arg1</code> ist.<br>
+Die Funktion <code class="fName">states</code> gibt die Menge aller Zustände von <code>arg1</code> zurück.<br>
+
+  
+<h2 id="part1"><a href="#part1">Teil 1: Automaten ausführen</a></h2>
+<!--
+statePath :: DFA -> State -> String -> [State]
+stateTree :: NFA -> State -> String -> Tree State 
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">statePath</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">DFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">State</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">State</span>]
+<span style="color: #06287e">stateTree</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">NFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">State</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Tree</span> <span style="color: #902000">State</span> 
+</pre></div><!--END-->
+Die Funktion <code class="fName">statePath</code> gibt die Liste von Zuständen zurück, welche vom DFA <code>arg1</code> im Zustand <code>arg2</code> auf Eingabe <code>arg3</code> durchlaufen wird. Falls <code>arg3</code> leer ist, dann soll <code>[arg2]</code> zurückgegeben werden.<br>
+<!--Beispiel-->
+Die Funktion <code class="fName">stateTree</code> gibt den Baum von Zuständen zurück, welcher vom NFA <code>arg1</code> in Zustand <code>arg2</code> für die Eingabe <code>arg3</code> erzeugt wird. Falls <code>arg3</code> leer ist, dann soll <code>Tree arg2 []</code> zurückgegeben werden.
+
+<!--
+inLanguageDFA :: DFA -> String -> Bool
+inLanguageNFA :: NFA -> String -> Bool
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">inLanguageDFA</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">DFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>
+<span style="color: #06287e">inLanguageNFA</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">NFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>
+</pre></div><!--END-->
+Die Funktion <code class="fName">inLanguageDFA</code> gibt wahr zurück gdw. der DFA <code>arg1</code> die Eingabe <code>arg2</code> akzeptiert.<br>
+Die Funktion <code class="fName">inLanguageNFA</code> gibt wahr zurück gdw. der NFA <code>arg1</code> die Eingabe <code>arg2</code> akzeptiert.<br>
+
+<!--
+isTotal :: DFA -> String -> Bool
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">isTotal</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">DFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>
+</pre></div><!--END-->
+Die Funktion <code class="fName">isTotal</code> gibt falsch zurück gdw. es eine Eingabe <code>x</code> gibt, die nur aus Zeichen aus <code>arg2</code> besteht und für die gilt <code>(last (statePath arg1 x)) == undefinedState</code>.
+
+<h2 id="part2"><a href="#part2">Teil 2: Automaten kombinieren</a></h2>
+<!--
+single :: String -> DFA
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">single</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">DFA</span>
+</pre></div><!--END-->
+Die Funktion <code class="fName">single</code> gibt einen Automaten zurück, welcher nur das Wort <code>arg1</code> akzeptiert.<br>
+
+
+<!--
+complement   :: String -> DFA -> DFA 
+union        :: String -> DFA -> DFA -> DFA 
+intersection :: String -> DFA -> DFA -> DFA
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">complement</span>   <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">DFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">DFA</span> 
+<span style="color: #06287e">union</span>        <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">DFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">DFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">DFA</span> 
+<span style="color: #06287e">intersection</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">DFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">DFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">DFA</span>
+</pre></div><!--END-->
+
+
+Die Funktion <code class="fName">complement</code> gibt einen Automaten zurück, welcher ein Wort <code>x</code> über dem Alphabet <code>arg1</code> akzeptiert gdw. <code>arg2</code> das Wort <code>x</code> nicht akzeptiert. Die kann realisiert werden, indem die Endzustände und nicht-Endzustände von <code>arg2</code> vertauscht werden. <!--Sie können annehmen, dass <code>(isTotal arg2 arg1)</code> gilt.--><br>
+
+Die Funktion <code class="fName">union</code> gibt einen Automaten zurück, welcher ein Wort <code>x</code> über dem Alphabet <code>arg1</code> akzeptiert gdw. <code>arg2</code> oder <code>arg3</code> das Wort <code>x</code> akzeptieren.<br>
+
+Die Funktion <code class="fName">intersection</code> gibt einen Automaten zurück, welcher ein Wort <code>x</code> über dem Alphabet <code>arg1</code> akzeptiert gdw. <code>arg2</code> und <code>arg3</code> das Wort <code>x</code> akzeptieren.<br>
+
+Seien \(M_1\) und \(M_2\) DFA über dem Alphabet \(\Sigma\). Der Produktautomat \(M\) von \(M_1\) und \(M_2\) ist ein DFA, der wie folgt definiert ist. Die  Zustandsmenge (bzw. Endzustandsmenge) von \(M\) ist das Kreuzprodukt der Zustandsmengen (bzw. Endzustandsmengen) von \(M_1\) und \(M_2\). Der Startzustand von \(M\) ist \((z_{01},z_{02})\), wobei \(z_{01}\) und \(z_{02}\) die Startzustände von \(M_1\) und \(M_2\) sind, respektive. Die Überführungsfunktion \(\delta\) von \(M\) ist wie folgt definiert für alle Zustände \(z_1\) von \(M_1\) und \(z_2\) von \(M_2\) und \(x \in \Sigma\): 
+
+$$ \delta((z_1,z_2),x) = (\delta_1(z_1,x),\delta_2(z_2,x)) $$
+
+wobei \(\delta_1\) und \(\delta_2\) die Überführungsfunktion von \(M_1\) und \(M_2\) sind. Der Automat \(M\) erkennt den Schnitt der Sprachen von \(M_1\) und \(M_2\). <br>
+
+Hinweis: der erste Parameter dieser drei Funktionen muss nur beachtet werden, wenn der Produktautomat berechnet wird. 
+
+<h2 id="part3"><a href="#part3">Teil 3: Determinisierung</a></h2>
+Die Potenzmengenkonstruktion ist ein Algorithmus, welcher einen NFA \(M\) in einen DFA \(M'\) umwandelt, sodass \( L(M) = L(M')\) (beide erkennen die gleiche Sprache). Dabei wird schrittweise eine Tabelle aus \(M\) konstruiert, welche am Ende den DFA \(M'\) beschreibt. Für den obigen NFA würde die Konstruktion dieser Tabelle wie folgt ablaufen:
+
+<div class="fig">
+<div class="fig">
+<button onclick="prevSlide()">&#10094; Zurück</button>
+<span style="margin-left:10px;margin-right:10px;">Schritt <span id="pmkCurSlide">1</span>/<span id="pmkTotalSlides"></span></span>
+<button onclick="nextSlide()">Weiter &#10095;</button>
+</div>
+
+<div class="slide">
+<table class="pmkTable">
+  <tr>
+    <th></th><th>\(0\)</th><th>\(1\)</th>
+  </tr>
+  <tr>
+    <td>\(\{ z_0 \}\)</td><td style="color:#FFFFFF">\(\{ z_0, z_1 \}\)</td><td style="color:#FFFFFF">\(\{ z_0 \}\)</td>
+  </tr>
+  <tr style="color:#FFFFFF">
+    <td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr style="color:#FFFFFF">
+    <td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>  
+</table>
+<div class="fig">
+beginne mit \(\{z_0\}\) 
+</div>
+</div>
+
+<div class="slide">
+<table class="pmkTable">
+  <tr>
+    <th></th><th>\(0\)</th><th>\(1\)</th>
+  </tr>
+  <tr>
+    <td>\(\{ z_0 \}\)</td><td>\(\{ z_0, z_1 \}\)</td><td style="color:#FFFFFF">\(\{ z_0 \}\)</td>
+  </tr>
+  <tr style="color:#FFFFFF">
+    <td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr style="color:#FFFFFF">
+    <td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>  
+</table>
+<div class="fig">
+von \(z_0\) kommt man mit \(0\) zu \(z_0\) oder \(z_1\) 
+</div>
+</div>
+
+<div class="slide">
+<table class="pmkTable">
+  <tr>
+    <th></th><th>\(0\)</th><th>\(1\)</th>
+  </tr>
+  <tr>
+    <td>\(\{ z_0 \}\)</td><td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr style="color:#FFFFFF">
+    <td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr style="color:#FFFFFF">
+    <td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>  
+</table>
+<div class="fig">
+von \(z_0\) kommt man mit \(1\) zu \(z_0\) 
+</div>
+</div>
+
+<div class="slide">
+<table class="pmkTable">
+  <tr>
+    <th></th><th>\(0\)</th><th>\(1\)</th>
+  </tr>
+  <tr>
+    <td>\(\{ z_0 \}\)</td><td style="color:#178a1d">\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr>
+    <td style="color:#178a1d">\(\{ z_0, z_1 \}\)</td><td style="color:#FFFFFF">\(\{ z_0, z_1, z_2 \}\)</td><td style="color:#FFFFFF">\(\{ z_0 \}\)</td>
+  </tr>
+  <tr style="color:#FFFFFF">
+    <td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>  
+</table>
+<div class="fig">
+füge \(\{z_0,z_1\}\) hinzu, da es noch keine Zeile dafür gibt 
+</div>
+</div>
+
+<div class="slide">
+<table class="pmkTable">
+  <tr>
+    <th></th><th>\(0\)</th><th>\(1\)</th>
+  </tr>
+  <tr>
+    <td>\(\{ z_0 \}\)</td><td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr>
+    <td>\(\{ z_0, z_1 \}\)</td><td style="color:#FFFFFF">\(\{ z_0, z_1, z_2 \}\)</td><td style="color:#FFFFFF">\(\{ z_0 \}\)</td>
+  </tr>
+  <tr style="color:#FFFFFF">
+    <td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>  
+</table>
+<div class="fig">
+betrachte für beide Zustände \(z_0\) und \(z_1\) die Übergänge
+</div>
+</div>
+
+<div class="slide">
+<table class="pmkTable">
+  <tr>
+    <th></th><th>\(0\)</th><th>\(1\)</th>
+  </tr>
+  <tr>
+    <td>\(\{ z_0 \}\)</td><td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr>
+    <td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td style="color:#FFFFFF">\(\{ z_0 \}\)</td>
+  </tr>
+  <tr style="color:#FFFFFF">
+    <td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>  
+</table>
+<div class="fig">
+von \(z_0\) kommt man mit 0 zu \(z_0\) oder \(z_1\), von \(z_1\) kommt man mit 0 zu \(z_2\)
+</div>
+</div>
+
+<div class="slide">
+<table class="pmkTable">
+  <tr>
+    <th></th><th>\(0\)</th><th>\(1\)</th>
+  </tr>
+  <tr>
+    <td>\(\{ z_0 \}\)</td><td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr>
+    <td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr style="color:#FFFFFF">
+    <td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>  
+</table>
+<div class="fig">
+von \(z_0\) kommt man mit 1 zu \(z_0\), von \(z_1\) kommt man mit 1 zu keinem Zustand
+</div>
+</div>
+
+<div class="slide">
+<table class="pmkTable">
+  <tr>
+    <th></th><th>\(0\)</th><th>\(1\)</th>
+  </tr>
+  <tr>
+    <td>\(\{ z_0 \}\)</td><td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr>
+    <td>\(\{ z_0, z_1 \}\)</td><td style="color:#178a1d">\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr>
+    <td style="color:#178a1d">\(\{ z_0, z_1, z_2 \}\)</td><td style="color:#FFFFFF">\(\{ z_0, z_1, z_2 \}\)</td><td style="color:#FFFFFF">\(\{ z_0 \}\)</td>
+  </tr>  
+</table>
+<div class="fig">
+füge \(\{z_0,z_1,z_2\}\) hinzu, da es noch keine Zeile dafür gibt 
+</div>
+</div>
+
+<div class="slide">
+<table class="pmkTable">
+  <tr>
+    <th></th><th>\(0\)</th><th>\(1\)</th>
+  </tr>
+  <tr>
+    <td>\(\{ z_0 \}\)</td><td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr>
+    <td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr>
+    <td>\(\{ z_0, z_1, z_2 \}\)</td><td style="color:#FFFFFF">\(\{ z_0, z_1, z_2 \}\)</td><td style="color:#FFFFFF">\(\{ z_0 \}\)</td>
+  </tr>  
+</table>
+<div class="fig">
+betrachte für die Zustände \(z_0, z_1, z_2\) die Übergänge
+</div>
+</div>
+
+<div class="slide">
+<table class="pmkTable">
+  <tr>
+    <th></th><th>\(0\)</th><th>\(1\)</th>
+  </tr>
+  <tr>
+    <td>\(\{ z_0 \}\)</td><td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr>
+    <td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr>
+    <td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td style="color:#FFFFFF">\(\{ z_0 \}\)</td>
+  </tr>  
+</table>
+<div class="fig" style="color:#FFFFFF">
+von \(z_0\) kommt man mit 0 zu \(z_0\) oder \(z_1\) usw.
+</div>
+</div>
+
+<div class="slide">
+<table class="pmkTable">
+  <tr>
+    <th></th><th>\(0\)</th><th>\(1\)</th>
+  </tr>
+  <tr>
+    <td>\(\{ z_0 \}\)</td><td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr>
+    <td>\(\{ z_0, z_1 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>
+  <tr>
+    <td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0, z_1, z_2 \}\)</td><td>\(\{ z_0 \}\)</td>
+  </tr>  
+</table>
+<div class="fig">
+keine neuer Zustand taucht auf, also terminiert der Algorithmus
+</div>
+</div>
+
+</div>
+
+
+Die Zustände von \(M'\) sind die Einträge in der ersten Spalte. Jeder Zustand von \(M'\) entspricht einer Teilmenge der Zustände von \(M\). Die Tabelle beschreibt die Überführungsfunktion von \(M'\). Startzustand von \(M'\) ist \(\{z_0\}\). Die Menge der Endzustände von \(M'\) besteht aus den Zuständen, die einen Endzustand von \(M\) enthalten. In diesem Beispiel wäre nur \(\{z_0, z_1, z_2\}\) ein Endzustand, weil \(z_2\) ein Endzustand von \(M\) ist.<br>
+
+<!--
+determinize  :: String -> NFA -> DFA
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">determinize</span>  <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">NFA</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">DFA</span>
+</pre></div><!--END-->
+Die Funktion <code class="fName">determinize</code> soll einen DFA zurückgegeben, welcher die gleiche Sprache erkennt wie <code>arg2</code> über dem Alphabet <code>arg1</code>.
+
+
+<h2 id="part4"><a href="#part4">Teil 4: T9-Automat (optional)</a></h2>
+T9 ist ein System, welches die Eingabe von Texten auf Endgeräten mit einer 12er-Tastatur (üblich auf alten Mobiltelefonen ohne Touchscreen) erleichtert. Den Ziffern 2 bis 9 werden disjunkte Teilmengen des Alphabets A-Z zugewiesen. Zusätzlich muss für die gewünschte Sprache ein Wörterbuch hinterlegt sein. Möchte der Nutzer nun z.B. "hallo" eingeben, so drückt er die Ziffern 4-2-5-5-6. Es kann vorkommen, dass unterschiedliche Wörter die gleiche Codesequenz haben. Zum Beispiel haben die Wörter "kiss" und "lips" beide die Codesequenz 5477. In diesem Fall kann man durch mehrmaliges Drücken einer bestimmten Taste das gewünschte Wort auswählen.
+
+<div style="text-align:center">
+<img src="Res/t9.jpg" style="width:400px">  
+</div>
+
+Für eine Liste von Wörtern (Wörterbuch) soll ein deterministischer Automat konstruiert werden, welcher für Strings über dem Alphabet 2-9 folgende Eigenschaften erfüllt. 
+<ul>
+  <li>der Automat akzeptiert eine Codesequenz gdw. diese mindestens ein Wort aus dem Wörterbuch beschreibt</li>
+  <li>sei <code>z</code> der letzte Zustand, welcher bei Ausführung des Automaten für eine Codesequenz <code>x</code> erreicht wird. Falls <code>z</code> ein Endzustand ist, dann soll gelten: <code>(read z)::[String]</code> ist die sortierte Liste der Wörter aus dem Wörterbuch, welche die Codesequenz <code>x</code> haben</li>
+</ul>
+
+<!--
+t9dfa :: [String] -> DFA
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">t9dfa</span> <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">String</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">DFA</span>
+</pre></div><!--END-->
+Die Funktion <code class="fName">t9dfa</code> soll einen DFA, welcher die obigen Anforderungen erfüllt, für das Wörterbuch <code>arg1</code> zurückgegeben. Sie können davon ausgehen, dass <code>arg1</code> keine Duplikate enthält, nicht leer ist und auch nicht den leeren String enthält.<br>
+<details>
+<summary>Tipp</summary>
+Konstruieren Sie zuerst einen NFA, welcher für jedes Wort aus dem Wörterbuch einen Pfad hat. 
+</details>
+
+
+</div>
+<script>
+curSlide = 1;
+totalSlides = document.getElementsByClassName("slide").length;
+show();
+document.getElementById("pmkTotalSlides").innerHTML = totalSlides;
+</script>
+</body>
+</html>

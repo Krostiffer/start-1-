@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>[SP20][AB2] Rekursive Ausdrücke</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<link rel="stylesheet" type="text/css" href="Res/style.css">
+</head>
+<body>
+<div id="header">
+<span style="font-weight:bold;">
+Systematisches Programmieren 
+<span style="float:right;">Sommersemester 2020</span><br>
+Dr. Maurice Chandoo
+<span style="float:right;">Leibniz Universität Hannover</span><br>
+</span>
+</div>
+
+<div id="navi">
+<div style="float: left"><a href="AB1.html">&#10094; AB1</a></div>
+<div style="float: right"><a href="AB3.html">AB3 &#10095;</a></div>
+<div style="margin: 0 auto;width:inherit;text-align:center;">
+<a href="#part1">Teil 1</a>
+<a href="#part2">Teil 2</a>
+<a href="#part3">Teil 3</a>
+<a href="#part4">Teil 4</a>
+<a href="#part5">Teil 5</a>
+</div>
+</div>
+
+<div id="body2" style="margin-bottom:40vh">
+<h1><span class="abTag">AB2</span> Rekursive Ausdrücke</h1>
+
+Implementieren Sie die folgenden Funktionen nur unter Verwendung der bereits importierten Funktionen. Folgende Sprachkonstrukte dürfen nicht verwendet werden:
+
+<ul>  
+  <li><code>if ... then ... else ...</code> (benutzen Sie stattdessen <code class="fName">if'</code> sofern importiert)</li>
+  <li><a href="http://learnyouahaskell.com/syntax-in-functions#guards-guards">Guards</a></li>
+  <li><a href="http://learnyouahaskell.com/starting-out#im-a-list-comprehension">List Comprehensions</a>: <code>[(i,j) | i <- [1,2], j <- [3,4]]</code></li>
+</ul>
+
+Arithmetic Sequences <code>[i .. j]</code> sind nun erlaubt und an einigen Stellen auch notwendig (entspricht der Funktion <code>listFromTo</code>). 
+
+<h2><a href="https://www.youtube.com/watch?v=ADGUi_CKzqs">🎦 Selbstreduktion</a></h2>
+Die nachfolgenden Probleme können alle durch Selbstreduktion gelöst werden. Bei dieser algorithmischen Technik wird ein Problem gelöst, indem eine Instanz (Eingabe) mithilfe einer <b>Reduktionsregel</b> in eine (manchmal auch mehrere) kleinere Instanz umgewandelt wird, für welche rekursiv eine Lösung berechnet wird. Aus der Lösung der kleineren Instanz wird dann die Lösung für die ursprüngliche Instanz berechnet. Instanzen, auf welche die Reduktionsregel nicht angewendet wird, nennen wir <b>irreduzibel</b>. Für solche Instanzen gibt es einen separaten Teil im Algorithmus, welcher die Lösung berechnet. 
+
+
+
+<h2 id="part1"><a href="#part1">Teil 1: Primitive Sort</a></h2>
+
+Eine Liste ist (aufsteigend) sortiert gdw. für alle benachbarten Elemente der Liste gilt, dass das linke Element nicht größer ist als das rechte. Wir bezeichnen zwei benachbarte Elemente in einer Liste als <b>u-Zeugen</b> (u = unsortiert), falls das linke Element größer ist als das rechte. Das heißt, eine Liste ist sortiert gdw. sie keine u-Zeugen enthält. Ist eine Liste unsortiert, können wir den ersten u-Zeugen nehmen und die beiden Elemente vertauschen. Wiederholt man dies ausreichend oft, dann ist die Liste sortiert. Dieser Algorithmus kann als eine Vorstufe von BubbleSort betrachtet werden. 
+
+<!--
+unorderedWitnesses :: (Ord a) => [a] -> [Int]
+swap               :: Int -> Int -> [a] -> [a]
+primitiveSort      :: (Ord a) => [a] -> [a]
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">unorderedWitnesses</span> <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Ord</span> a) <span style="color: #007020; font-weight: bold">=&gt;</span> [a] <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Int</span>]
+<span style="color: #06287e">swap</span>               <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [a] <span style="color: #007020; font-weight: bold">-&gt;</span> [a]
+<span style="color: #06287e">primitiveSort</span>      <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Ord</span> a) <span style="color: #007020; font-weight: bold">=&gt;</span> [a] <span style="color: #007020; font-weight: bold">-&gt;</span> [a]
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">unorderedWitnesses</code> gibt die Liste der u-Zeugen von <code>arg1</code> zurück. Ein u-Zeuge wird dabei durch den Index des linken Elements beschrieben. Beispiele:
+
+<ul>
+<li><code>unorderedWitnesses [2,1,4,7,0] = [0,3]</code></li>
+<li><code>unorderedWitnesses [1,2,3,4] = []</code></li>
+</ul>
+
+Die Funktion <code class="fName">swap</code> vertauscht die Elemente mit Index <code>arg1</code> und <code>arg2</code> in <code>arg3</code>.<br>
+
+Die Funktion <code class="fName">primitiveSort</code> gibt <code>arg1</code> in aufsteigend sortierter Reihenfolge zurück. Die Funktion soll durch den obigen Algorithmus implementiert werden. 
+
+
+
+<h2 id="part2"><a href="#part2">Teil 2: Arithmetik</a></h2>
+Für diesen Teil können Sie davon ausgehen, dass alle Eingabeparameter &ge; 0 sind. 
+
+<!--
+add  :: Int -> Int -> Int
+mult :: Int -> Int -> Int
+pow  :: Int -> Int -> Int
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">add</span>  <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+<span style="color: #06287e">mult</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+<span style="color: #06287e">pow</span>  <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">pow</code> ist definiert als <code>arg1 ^ arg2</code>.
+
+<!--
+genericArithmetic :: (Int -> Int) -> (Int -> Int -> Int) -> Int -> Int -> Int
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">genericArithmetic</span> <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>) <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>) <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span><!--END-->
+</pre></div>
+
+Die Funktion <code class="fName">genericArithmetic</code> soll so definiert werden, dass folgende Spezifikation gilt ('?' müssen passend ersetzt werden):
+
+<!--
+add  x y = (genericArithmetic id ?) x y
+mult x y = (genericArithmetic ?  ?) x y
+pow  x y = (genericArithmetic ?  ?) x y
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">add</span>  x y <span style="color: #007020; font-weight: bold">=</span> (genericArithmetic id <span style="color: #666666">?</span>) x y
+<span style="color: #06287e">mult</span> x y <span style="color: #007020; font-weight: bold">=</span> (genericArithmetic <span style="color: #666666">?</span>  <span style="color: #666666">?</span>) x y
+<span style="color: #06287e">pow</span>  x y <span style="color: #007020; font-weight: bold">=</span> (genericArithmetic <span style="color: #666666">?</span>  <span style="color: #666666">?</span>) x y
+</pre></div><!--END-->
+
+
+
+<h2 id="part3"><a href="#part3">Teil 3: Azyklische Graphen</a></h2>
+Ein gerichteter Graph \(G\) ist azyklisch gdw. er keine Knoten enthält oder wenn seine reduzierte Form \(G'\) azyklisch ist. Den Graph \(G'\) erhält man, indem alle Knoten aus \(G\) gelöscht werden, welche nicht mindestens einen eingehenden und einen ausgehenden Nachbarn haben. Solche Knoten können nicht Teil eines Zyklus sein.<br>
+
+<div class="fig"><img src="Res/graph1.png" style="width:200px"></div>
+
+Im obigen Graph ist 2 ein ausgehender Nachbar von 1 und 3 ein eingehender Nachbar von 1. Dieser Graph wird in Code wie folgt ausgedrückt: <code>Graph [(1,[2]),(2,[3]),(3,[1])]</code>.
+
+<!--
+type Vertex = Int
+type OutNeighbors = [Vertex]
+data Graph = Graph [(Vertex,OutNeighbors)] deriving (Eq, Show, Read)
+
+isEmptyGraph :: Graph -> Bool
+vertices :: Graph -> [Vertex] 
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">Vertex</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">Int</span>
+<span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">OutNeighbors</span> <span style="color: #007020; font-weight: bold">=</span> [<span style="color: #902000">Vertex</span>]
+<span style="color: #007020; font-weight: bold">data</span> <span style="color: #902000">Graph</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">Graph</span> [(<span style="color: #902000">Vertex</span>,<span style="color: #902000">OutNeighbors</span>)] <span style="color: #007020; font-weight: bold">deriving</span> (<span style="color: #902000">Eq</span>, <span style="color: #902000">Show</span>, <span style="color: #902000">Read</span>)
+
+<span style="color: #06287e">isEmptyGraph</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Graph</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>
+<span style="color: #06287e">vertices</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Graph</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Vertex</span>]
+</pre></div><!--END-->
+Ein Graph ist codiert als Liste von Tupeln, wobei der erste Teil den Knoten enthält und der zweite die Liste der ausgehenden Nachbarn dieses Knotens. Sie können davon ausgehen, dass die Listen der ausgehenden Knoten keine Duplikate enthalten und jeder ausgehende Nachbar auch als Knoten im Graphen existiert.<br>
+
+Die Funktion <code class="fName">isEmptyGraph</code> ist wahr gdw. der Graph keine Knoten enthält.<br>
+
+Die Funktion <code class="fName">vertices</code> gibt die Liste aller Knoten eines Graphen zurück.<br>
+
+<!--
+inNeighbors  :: Vertex -> Graph -> [Vertex]
+outNeighbors :: Vertex -> Graph -> [Vertex]
+reduction    :: Graph -> Graph
+acyclic      :: Graph -> Bool
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">inNeighbors</span>  <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Vertex</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Graph</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Vertex</span>]
+<span style="color: #06287e">outNeighbors</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Vertex</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Graph</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Vertex</span>]
+<span style="color: #06287e">reduction</span>    <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Graph</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Graph</span>
+<span style="color: #06287e">acyclic</span>      <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Graph</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">inNeighbors</code> gibt die eingehenden Nachbarn von Knoten <code>arg1</code> in Graph <code>arg2</code> zurück.<br>
+
+Die Funktion <code class="fName">outNeighbors</code> gibt die ausgehenden Nachbarn von Knoten <code>arg1</code> in Graph <code>arg2</code> zurück.<br>
+
+Die Funktion <code class="fName">reduction</code> gibt die reduzierte Form \(G'\) eines Graphen \(G\) zurück.<br>
+
+Die Funktion <code class="fName">acyclic</code> gibt wahr zurück gdw. der Graph azyklisch ist. Die Funktion soll durch die obige Reduktionsregel implementiert werden. 
+
+
+
+<h2 id="part4"><a href="#part4">Teil 4: Teilmengen</a></h2>
+Die Menge aller nicht-leeren Teilmengen einer Menge \(M\) besteht aus \(M\) (sofern \(M\) selbst nicht die leere Menge ist) und der Menge aller nicht-leeren Teilmengen von \(M_1, M_2, \dots, M_n\) wobei \(n = |M|\) und \(M_i\) gleich der Menge \(M\) ohne das \(i\)-te Element ist. 
+
+<!--
+subsets  :: (Ord a) => [a] -> [[a]]
+kSubsets :: (Ord a) => Int -> [a] -> [[a]]
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">subsets</span>  <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Ord</span> a) <span style="color: #007020; font-weight: bold">=&gt;</span> [a] <span style="color: #007020; font-weight: bold">-&gt;</span> [[a]]
+<span style="color: #06287e">kSubsets</span> <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Ord</span> a) <span style="color: #007020; font-weight: bold">=&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [a] <span style="color: #007020; font-weight: bold">-&gt;</span> [[a]]
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">subsets</code> gibt eine Liste zurück, welche jede nicht-leere Teilmenge von <code>arg1</code> enthält (Duplikate sind erlaubt und die Reihenfolge kann beliebig sein). Falls <code>arg1</code> die leere Liste ist, dann ist der Rückgabewert von <code class="fName">subsets</code> auch die leere Liste. Sie können davon ausgehen, dass <code>arg1</code> kein Element doppelt enthält. Die Funktion soll durch die obige Reduktionsregel implementiert werden.<br>
+
+Die Funktion <code class="fName">kSubsets</code> gibt eine Liste zurück, welche alle Teilmengen von <code>arg2</code> mit <code>arg1</code> &ge; 1 Elementen enthält (ohne Duplikate, Reihenfolge beliebig).
+
+
+
+<h2 id="part5"><a href="#part5">Teil 5: Erfüllbarkeit &amp; Tautologien</a></h2>
+
+Eine \(k\)-stellige boolesche Funktion \(f\) ist erfüllbar gdw. \(f_0\) oder \(f_1\) erfüllbar ist, wobei \(k \geq 1\) und \(f_i\) die \((k-1)\)-stellige Funktion ist, welche aus \(f\) hervorgeht, wenn der erste Parameter auf \(i\) festgelegt wird.
+
+<!--
+data BooleanFunction = BooleanFunction ([Bool] -> Bool) [Bool] Arity
+eval         :: [Bool] -> BooleanFunction -> Bool
+partialApply :: Bool -> BooleanFunction -> BooleanFunction 
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #007020; font-weight: bold">data</span> <span style="color: #902000">BooleanFunction</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">BooleanFunction</span> ([<span style="color: #902000">Bool</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>) [<span style="color: #902000">Bool</span>] <span style="color: #902000">Arity</span>
+<span style="color: #06287e">eval</span>         <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">Bool</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">BooleanFunction</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>
+<span style="color: #06287e">partialApply</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Bool</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">BooleanFunction</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">BooleanFunction</span> 
+</pre></div><!--END-->
+
+Eine boolesche Funktion beliebiger Arität ist als <code>BooleanFunction</code> codiert. Die Funktion <code class="fName">partialApply</code> legt den ersten Parameter der Funktion <code>arg2</code> auf <code>arg1</code> fest (die festgelegten Parameter werden im zweiten Argument vom Konstruktor <code>BooleanFunction</code> gespeichert); die Arität der zurückgegebene boolesche Funktion verringert sich entsprechend um eins. Die Funktion <code class="fName">eval</code> wertet <code>arg2</code> für die Belegung <code>arg1</code> aus; die Länge von <code>arg1</code> muss gleich der Arität von <code>arg2</code> sein. 
+ 
+<details>
+<summary>Beispiel</summary>
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">exampleFormula</span> <span style="color: #007020; font-weight: bold">=</span> (<span style="color: #902000">BooleanFunction</span> f <span style="color: #902000">[]</span> <span style="color: #40a070">3</span>) 
+  <span style="color: #007020; font-weight: bold">where</span>
+    f [x1,x2,x3] <span style="color: #007020; font-weight: bold">=</span> (not x1) <span style="color: #666666">&amp;&amp;</span> (x2 <span style="color: #666666">||</span> x3) 
+   
+<span style="color: #06287e">eval</span> [<span style="color: #902000">True</span>,<span style="color: #902000">False</span>,<span style="color: #902000">False</span>] exampleFormula <span style="color: #60a0b0; font-style: italic">-- False</span>
+<span style="color: #06287e">eval</span> [<span style="color: #902000">False</span>,<span style="color: #902000">True</span>,<span style="color: #902000">False</span>] exampleFormula <span style="color: #60a0b0; font-style: italic">-- True</span>
+</pre></div>
+</details> 
+ 
+<br>
+ 
+<!--
+sat  :: BooleanFunction -> Bool
+taut :: BooleanFunction -> Bool
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">sat</span>  <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">BooleanFunction</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>
+<span style="color: #06287e">taut</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">BooleanFunction</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">sat</code> gibt wahr zurück gdw. die boolesche Funktion mindestens eine erfüllende Belegung besitzt. Die Funktion soll durch die obige Reduktionsregel implementiert werden. <br>
+
+Die Funktion <code class="fName">taut</code> gibt wahr zurück gdw. jede Belegung die boolesche Funktion erfüllt.
+
+</div>
+</body>
+</html>

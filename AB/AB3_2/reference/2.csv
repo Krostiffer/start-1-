@@ -1,0 +1,9 @@
+bubbleSort'
+bubbleSort
+Operation;cur;list;passes;sorted;Predicate Sequence;Next Operation;Calls;Source Line No
+o_init;0;[1,2,3,4];0;True;p_lt2(0) -> p_swap(0);o_move;;6
+o_move;1;;;;p_endOfIteration(0) -> p_swap(0);o_move;;10
+o_move;2;;;;p_endOfIteration(0) -> p_swap(0);o_move;;14
+o_move;3;;;;p_endOfIteration(1) -> p_nextIteration(0);HALT;;18
+
+Other trace lines

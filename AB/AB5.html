@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>[SP20][AB5] Quickselect und Huffman-Kodierung</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<link rel="stylesheet" type="text/css" href="Res/style.css">
+</style>
+</head>
+<body>
+<div id="header">
+<span style="font-weight:bold;">
+Systematisches Programmieren 
+<span style="float:right;">Sommersemester 2020</span><br>
+Dr. Maurice Chandoo
+<span style="float:right;">Leibniz Universität Hannover</span><br>
+</span>
+</div>
+
+<div id="navi">
+<div style="float: left"><a href="AB4.html">&#10094; AB4</a></div>
+<div style="float: right"><!--<a href="AB6.html">AB6 &#10095;</a>--></div>
+<div style="margin: 0 auto;width:inherit;text-align:center;">
+<a href="#part1">Teil 1</a>
+<a href="#part2">Teil 2</a>
+</div>
+</div>
+
+<div id="body2" style="margin-bottom:10vh">
+<h1><span class="abTag">AB5</span> Quickselect und Huffman-Kodierung</h1>
+
+Implementieren Sie die folgenden Funktionen nur unter Verwendung der bereits importierten Funktionen. Folgende Sprachkonstrukte dürfen nicht verwendet werden:
+
+<ul>  
+  <li><code>if ... then ... else ...</code> (benutzen Sie stattdessen <code class="fName">if'</code> sofern importiert)</li>
+  <li><a href="http://learnyouahaskell.com/syntax-in-functions#guards-guards">Guards</a></li>
+  <li><a href="http://learnyouahaskell.com/starting-out#im-a-list-comprehension">List Comprehensions</a>: <code>[(i,j) | i <- [1,2], j <- [3,4]]</code></li>
+</ul>
+
+
+<h2 id="part1"><a href="#part1">Teil 1: Quickselect</a></h2>
+<!--Erklärung Quickselect algorithmus, letzte element der virtuellen liste-->
+<p>
+Der Quickselect-Algorithmus berechnet das \(k\)-kleinste Element einer Liste <i>inplace</i>. Das heißt, dass der Algorithmus außer Zeiger auf die Liste keine zusätzlichen Informationen speichern muss. Der Algorithmus besteht aus zwei Teilen: <b>Partitionierung</b> und <b>Selektion</b>.</p>
+
+<p>
+Bei der <b>Partitionierung</b> wird eine Liste um ein Pivotelement herum sortiert. Genauer gesagt soll nach der Partitionierung gelten: alle Elemente in der Liste, die kleiner sind als das Pivotelement, stehen links davon und alle anderen rechts davon. Beispiel (rot = Pivotelement, blau = zu vergleichendes Element):<br>
+<div class="fig">
+<table class="qs">
+  <tr>    
+    <td class="qsCur">3</td>
+    <td>1</td>
+    <td>12</td>
+    <td>7</td>
+    <td>18</td>
+    <td>22</td>
+    <td>14</td>
+    <td>0</td>
+    <td class="qsPivot">9</td>
+    <td style="width: 13em;">
+    3 &lt; 9 &rarr; weiter
+    </td>
+  </tr>
+  <tr>    
+    <td>3</td>
+    <td class="qsCur">1</td>
+    <td>12</td>
+    <td>7</td>
+    <td>18</td>
+    <td>22</td>
+    <td>14</td>
+    <td>0</td>
+    <td class="qsPivot">9</td>
+    <td>
+    1 &lt; 9 &rarr; weiter
+    </td>    
+  </tr>  
+  <tr>    
+    <td>3</td>
+    <td>1</td>
+    <td class="qsCur">12</td>
+    <td>7</td>
+    <td>18</td>
+    <td>22</td>
+    <td>14</td>
+    <td>0</td>
+    <td class="qsPivot">9</td>
+    <td>
+    12 &ge; 9 &rarr; vertausche
+    </td>      
+  </tr>  
+  <tr>    
+    <td>3</td>
+    <td>1</td>
+    <td class="qsPivot">9</td>    
+    <td class="qsCur">7</td>
+    <td>18</td>
+    <td>22</td>
+    <td>14</td>
+    <td>0</td>
+    <td>12</td>
+    <td>
+    7 &lt; 9 &rarr; vertausche
+    </td>    
+  </tr>  
+  <tr>    
+    <td>3</td>
+    <td>1</td>
+    <td>7</td>
+    <td class="qsPivot">9</td>        
+    <td class="qsCur">18</td>
+    <td>22</td>
+    <td>14</td>
+    <td>0</td>
+    <td>12</td>
+    <td>
+    18 &ge; 9 &rarr; weiter
+    </td>    
+  </tr> 
+  <tr>    
+    <td>3</td>
+    <td>1</td>
+    <td>7</td>
+    <td class="qsPivot">9</td>        
+    <td>18</td>
+    <td class="qsCur">22</td>
+    <td>14</td>
+    <td>0</td>
+    <td>12</td>
+    <td>
+    22 &ge; 9 &rarr; weiter
+    </td>        
+  </tr>    
+  <tr>    
+    <td>3</td>
+    <td>1</td>
+    <td>7</td>
+    <td class="qsPivot">9</td>        
+    <td>18</td>
+    <td>22</td>
+    <td class="qsCur">14</td>
+    <td>0</td>
+    <td>12</td>
+    <td>
+    14 &ge; 9 &rarr; weiter
+    </td>            
+  </tr>  
+  <tr>    
+    <td>3</td>
+    <td>1</td>
+    <td>7</td>
+    <td class="qsPivot">9</td>        
+    <td>18</td>
+    <td>22</td>
+    <td>14</td>
+    <td class="qsCur">0</td>
+    <td>12</td>
+    <td>
+    0 &lt; 9 &rarr; vertausche 2x
+    </td>            
+  </tr>
+  <tr>    
+    <td>3</td>
+    <td>1</td>
+    <td>7</td>
+    <td>0</td>
+    <td class="qsPivot">9</td>            
+    <td>22</td>
+    <td>14</td>
+    <td>18</td>    
+    <td>12</td>
+  </tr>    
+</table>
+</div>
+In der vorletzten Zeile ist 0 kleiner als das Pivotelement 9 und muss deshalb links davon stehen. Vertauscht man die beiden Elemente, stehen jedoch die Elemente 18, 22 und 14 ebenfalls links von 9, obwohl wir bereits wissen, dass diese Elemente größer oder gleich 9 sind. Daher müssen zusätzlich 18 und 9 vertauscht werden. Die Partitionierung ist fertig, wenn \(n-1\) Elemente mit dem Pivot verglichen wurden, wobei \(n\) die Länge der Liste ist (\(n=9\) im obigen Beispiel).</p>
+
+<p>
+Die <b>Selektion</b> funktioniert nach folgendem Prinzip. 
+Zuerst wird ein Pivotelement nach einer gegebenen Regel gewählt. Gehen Sie davon aus, dass immer das letzte Element der verbleibenden Liste als Pivot gewählt wird. Dann wird die Liste um dieses Pivotelement partitioniert. Sei \(p\) der Index des Pivotelements nach der Partitionierung.<br>
+<ul>
+  <li>falls \(p = k-1\), dann ist das Pivotelement das \(k\)-kleinste Element</li>
+  <li>falls \(p \lt k-1 \), dann muss das gesuchte Element rechts vom Pivot liegen</li>
+  <li>falls \(p \gt k-1\), dann muss das gesuchte Element links vom Pivot liegen</li>  
+</ul>
+Die verbleibende Liste, in der das gesuchte Element sich befindet, merkt sich der Algorithmus durch Start- und Endindex.
+In den zwei Fällen \(p \neq k-1\)  wird die Selektion für die verbleibenden Liste wiederholt.
+ 
+Im obigen Beispiel hat das Pivotelement 9 nach der Partitionierung Index 4 und ist somit das 5-kleinste Element.
+</p>
+
+<!--
+partition_list  :: [Int] -> Int -> Int -> Int -> [Int]
+partition_pivot :: [Int] -> Int -> Int -> Int -> Int
+select :: Int -> [Int] -> Int
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">partition_list</span>  <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">Int</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Int</span>]
+<span style="color: #06287e">partition_pivot</span> <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">Int</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+<span style="color: #06287e">select</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Int</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+</pre></div><!--END-->
+Die Funktion <code class="fName">partition_list</code> gibt die Liste <code>arg1</code> zurück, nachdem die verbleibende Liste beginnend ab Index <code>arg2</code> bis Index <code>arg3</code> mit Pivotelement auf Index <code>arg4</code> partitioniert wurde.<br>
+Die Funktion <code class="fName">partition_pivot</code> gibt den Index des Pivotelements in der Liste <code>(partition_list arg1 arg2 arg3 arg4)</code> zurück.<br>
+Die Funktion <code class="fName">select</code> gibt das <code>arg1</code>-kleinste Element der Liste <code>arg2</code> zurück.
+Sie können annehmen, dass <code>1 &lt;= arg1 &lt;= (length arg2)</code> und das <code>arg2</code> nicht leer ist.<br>
+Implementieren Sie die Funktionen, indem Sie die Programme in den Dateien <code>AB5_1/partition.sp</code> und <code>AB5_1/select.sp</code> vervollständigen, sodass diese den obigen Algorithmus implementieren. Fügen Sie keine zusätzlichen Variablen hinzu. Außerdem dürfen alle Variablen außer <code>list</code> und <code>res</code>
+nur Werte zwischen \(0\) und \(n\) annehmen, wobei \(n\) die Länge von <code>list</code> ist. Die Variable <code>res</code> darf in keinem Prädikat und in keiner Operation auf der rechten Seite vorkommen.<br>
+
+
+
+
+<h2 id="part2"><a href="#part2">Teil 2: Huffman-Kodierung</a></h2>
+<p>
+Die Huffman-Kodierung dient dazu, einer endlichen Menge von Quellsymbolen \(\Sigma\) Codewörter variabler Länge über einem Codealphabet \(\Gamma\) zuzuordnen. Quellsymbole die häufiger auftreten sollen kürzere Codewörter zugeordnet bekommen. Die relative Auftrittshäufigkeit aller Quellsymbole \( p \colon \Sigma \rightarrow [0,1] \) wird als bekannt vorausgesetzt; es wird angenommen, dass jedes Quellsymbol mindestens ein Mal auftritt, d.h. \(p(x) > 0\) für alle \(x \in \Sigma\).<br>
+Die Huffman-Kodierung \(h \colon \Sigma \rightarrow \Gamma^* \) wird wie folgt konstruiert. Aus einer Menge von Bäumen entsteht durch Zusammenfassen letztendlich ein einzelner Baum, dessen Blätter den Quellsymbolen entsprechen und der Pfad zu einem Blatt beschreibt dessen Codewort. Die Knoten werden mit Teilmengen \(X\) von \(\Sigma\) beschriftet und die kumulative Auftrittswahrscheinlichkeit einer solchen Menge ist \(p(X) = \Sigma_{x \in X} p(x)\). </p>
+
+<p>
+Zu Beginn wird für jedes Quellsymbol \(x\) ein Baum bestehend aus einem einzigen Knoten angelegt, welcher mit \(\{x\}\) beschriftet wird. Anschließend wird folgender Schritt wiederholt bis nur noch ein Baum übrig ist. </p>
+
+<p>
+Wähle die \(|\Gamma|\) Bäume, welche die niedrigste Auftrittswahrscheinlichkeit haben. Die Auftrittswahrscheinlichkeit eines Baums \(T\) ist \(p(X)\), wobei \(X\) die Beschriftung des Wurzelknotens von \(T\) ist. Falls dieses Auswahlkriterium nicht eindeutig ist, dann bevorzuge jene Bäume mit einer geringeren Tiefe. Falls dieses Auswahlkriterium immer noch nicht eindeutig ist, dann bevorzuge jene Bäume dessen Wurzelknoten eine lexikographisch kleinere Beschriftung haben. Fasse diese Bäume zu einem neuen Baum zusammen.</p>
+
+<p>Damit die Eindeutigkeit der Konstruktion gewährt ist, sollen die gewählten Teilbäume immer in lexikographischer Reihenfolge (bzgl. der Beschriftung ihrer Wurzelknoten) an den neuen Baum angehängt werden.</p>
+
+<b>Beispiel</b>: für \(\Sigma = \{a,b,c,d,e\}\), \(\Gamma = \{0,1\}\) und \( p = \left(\begin{smallmatrix}a&b&c&d&e\\\frac{4}{20}&\frac{3}{20}&\frac{8}{20}&\frac{1}{20}&\frac{4}{20}\end{smallmatrix}\right)\) entsteht folgender Baum:
+<div class="fig">
+<img src="Res/ht.png" style="width:400px;">
+</div>
+
+<!--
+type CodeAlphabet   = [Char]
+type Probabilities  = Map Char (Int,Int) --(numerator, denominator)
+type HuffmanTree    = (Tree [Char])
+
+huffmanTree   :: CodeAlphabet -> Probabilities -> HuffmanTree
+huffmanEncode :: HuffmanTree -> CodeAlphabet -> String -> String
+huffmanDecode :: HuffmanTree -> CodeAlphabet -> String -> String
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">CodeAlphabet</span>   <span style="color: #007020; font-weight: bold">=</span> [<span style="color: #902000">Char</span>]
+<span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">Probabilities</span>  <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">Map</span> <span style="color: #902000">Char</span> (<span style="color: #902000">Int</span>,<span style="color: #902000">Int</span>)
+<span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">HuffmanTree</span>    <span style="color: #007020; font-weight: bold">=</span> (<span style="color: #902000">Tree</span> [<span style="color: #902000">Char</span>])
+
+<span style="color: #06287e">huffmanTree</span>   <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">CodeAlphabet</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Probabilities</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">HuffmanTree</span>
+<span style="color: #06287e">huffmanEncode</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">HuffmanTree</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">CodeAlphabet</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">String</span>
+<span style="color: #06287e">huffmanDecode</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">HuffmanTree</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">CodeAlphabet</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">String</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">String</span>
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">huffmanTree</code> soll für eine Wahrscheinlichkeitsverteilung <code>arg1</code> und ein Codealphabet <code>arg2</code> den entsprechenden Huffman-Baum zurückgeben. Die Menge der Quellsymbole ist implizit gegeben durch <code>(map fst (toList arg2))</code>.
+<details>
+<summary>Beispiele</summary>
+<!--
+ht1 = huffmanTree "01" (fromList [('a',(4,20)),('b',(3,20)),('c',(8,20)),('d',(1,20)),('e',(4,20))])
+"abcde"
+  "ae"
+    "a"
+    "e"
+  "bcd"
+    "bd"
+      "b"
+      "d"
+    "c"
+    
+ht2 = huffmanTree "01" (fromList [('a',(4,20)),('b',(8,40)),('c',(4,20)),('d',(8,40)),('e',(4,20))])    
+"abcde"
+  "abe"
+    "ab"
+      "a"
+      "b"
+    "e"
+  "cd"
+    "c"
+    "d"
+
+ht3 = huffmanTree "012" (fromList [('a',(6,24)),('b',(2,24)),('c',(6,24)),('d',(2,24)),('e',(5,24)),('f',(2,24)),('g',(1,24))])
+"abcdefg"
+  "a"
+  "bdefg"
+    "bdg"
+      "b"
+      "d"
+      "g"
+    "e"
+    "f"
+  "c"    
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">ht1</span> <span style="color: #007020; font-weight: bold">=</span> huffmanTree <span style="color: #4070a0">&quot;01&quot;</span> (fromList [(&#39;a&#39;,(<span style="color: #40a070">4</span>,<span style="color: #40a070">20</span>)),(&#39;b&#39;,(<span style="color: #40a070">3</span>,<span style="color: #40a070">20</span>)),(&#39;c&#39;,(<span style="color: #40a070">8</span>,<span style="color: #40a070">20</span>)),(&#39;d&#39;,(<span style="color: #40a070">1</span>,<span style="color: #40a070">20</span>)),(&#39;e&#39;,(<span style="color: #40a070">4</span>,<span style="color: #40a070">20</span>))])
+<span style="color: #4070a0">&quot;abcde&quot;</span>
+  <span style="color: #4070a0">&quot;ae&quot;</span>
+    <span style="color: #4070a0">&quot;a&quot;</span>
+    <span style="color: #4070a0">&quot;e&quot;</span>
+  <span style="color: #4070a0">&quot;bcd&quot;</span>
+    <span style="color: #4070a0">&quot;bd&quot;</span>
+      <span style="color: #4070a0">&quot;b&quot;</span>
+      <span style="color: #4070a0">&quot;d&quot;</span>
+    <span style="color: #4070a0">&quot;c&quot;</span>
+    
+<span style="color: #06287e">ht2</span> <span style="color: #007020; font-weight: bold">=</span> huffmanTree <span style="color: #4070a0">&quot;01&quot;</span> (fromList [(&#39;a&#39;,(<span style="color: #40a070">4</span>,<span style="color: #40a070">20</span>)),(&#39;b&#39;,(<span style="color: #40a070">8</span>,<span style="color: #40a070">40</span>)),(&#39;c&#39;,(<span style="color: #40a070">4</span>,<span style="color: #40a070">20</span>)),(&#39;d&#39;,(<span style="color: #40a070">8</span>,<span style="color: #40a070">40</span>)),(&#39;e&#39;,(<span style="color: #40a070">4</span>,<span style="color: #40a070">20</span>))])    
+<span style="color: #4070a0">&quot;abcde&quot;</span>
+  <span style="color: #4070a0">&quot;abe&quot;</span>
+    <span style="color: #4070a0">&quot;ab&quot;</span>
+      <span style="color: #4070a0">&quot;a&quot;</span>
+      <span style="color: #4070a0">&quot;b&quot;</span>
+    <span style="color: #4070a0">&quot;e&quot;</span>
+  <span style="color: #4070a0">&quot;cd&quot;</span>
+    <span style="color: #4070a0">&quot;c&quot;</span>
+    <span style="color: #4070a0">&quot;d&quot;</span>
+
+<span style="color: #06287e">ht3</span> <span style="color: #007020; font-weight: bold">=</span> huffmanTree <span style="color: #4070a0">&quot;012&quot;</span> (fromList [(&#39;a&#39;,(<span style="color: #40a070">6</span>,<span style="color: #40a070">24</span>)),(&#39;b&#39;,(<span style="color: #40a070">2</span>,<span style="color: #40a070">24</span>)),(&#39;c&#39;,(<span style="color: #40a070">6</span>,<span style="color: #40a070">24</span>)),(&#39;d&#39;,(<span style="color: #40a070">2</span>,<span style="color: #40a070">24</span>)),(&#39;e&#39;,(<span style="color: #40a070">5</span>,<span style="color: #40a070">24</span>)),(&#39;f&#39;,(<span style="color: #40a070">2</span>,<span style="color: #40a070">24</span>)),(&#39;g&#39;,(<span style="color: #40a070">1</span>,<span style="color: #40a070">24</span>))])
+<span style="color: #4070a0">&quot;abcdefg&quot;</span>
+  <span style="color: #4070a0">&quot;a&quot;</span>
+  <span style="color: #4070a0">&quot;bdefg&quot;</span>
+    <span style="color: #4070a0">&quot;bdg&quot;</span>
+      <span style="color: #4070a0">&quot;b&quot;</span>
+      <span style="color: #4070a0">&quot;d&quot;</span>
+      <span style="color: #4070a0">&quot;g&quot;</span>
+    <span style="color: #4070a0">&quot;e&quot;</span>
+    <span style="color: #4070a0">&quot;f&quot;</span>
+  <span style="color: #4070a0">&quot;c&quot;</span>
+</pre></div><!--END-->
+
+</details>
+
+Die Funktion <code class="fName">huffmanEncode</code> soll <code>arg3</code> in einen String über dem Codealphabet umwandeln. Der \(i\)-te Teilbaum eines Knotens von <code>arg1</code> soll dem \(i\)-ten Zeichen aus <code>arg2</code> zugeordnet werden. Beispiele:
+<ul>
+  <li><code>huffmanEncode ht1 "01" "abc" = "0010011"</code></li>
+  <li><code>huffmanEncode ht1 "yx" "abc" = "yyxyyxx"</code></li>
+  <li><code>huffmanEncode ht1 "10" "d" = "010"</code></li>
+  <li><code>huffmanEncode ht3 "ABC" "acd" = "ACBAB"</code></li>
+</ul> 
+
+<p>
+Die Funktion <code class="fName">huffmanDecode</code> soll <code>arg3</code> zurück in einen String über der Menge der Quellsymbole dekodieren, d.h. <code>(huffmanDecode x y (huffmanEncode x y z)) == z</code>. 
+
+Implementieren Sie die Funktion, indem Sie das Programm in der Datei <code>AB5_2/decode.sp</code> vervollständigen. Die Variable <code>input</code> soll wie ein Eingabestream und die Variable <code>output</code> wie ein Ausgabestream behandelt werden. Das bedeutet, die Variable <code>input</code> soll nur über die Operation <code>o_next</code> (liest nächstes Zeichen des Eingabestreams) und das Prädikat <code>p_endOfStream</code> (wahr gdw. Eingabestream das Ende erreicht hat) benutzt werden. Die Variable <code>output</code> soll nur über die Operation <code>o_flush</code> (<code>buffer</code> wird an <code>output</code> hinten angehängt) benutzt werden.</p>
+
+<p>
+Die folgenden Fragen sind ergebnissoffen und optional.<br>
+<b>Zusatzfrage 1</b>. Angenommen ein deutscher Text \(T\) der Länge \(n\) bestehend aus den Zeichen a bis z, äöüß, Leerzeichen und Punkt (32 verschiedene Zeichen) ist gegeben. Der Text \(T\) kann durch \(5n\) Bits beschrieben werden. Wie würden Sie die Menge der  Quellsymbole \(\Sigma\) für \(T\) wählen, damit die Huffman-codierte Version \(T_H\) von \(T\) möglichst kurz ausfällt (\(\Gamma = \{0,1\}\))?  
+Was würden Sie erwarten, wie das Verhältnis \(|T_H|/5n\) ausfällt?
+<br><b>Zusatzfrage 2</b>. Wie könnte man die Huffman-Kodierung zum Komprimieren von Binärdateien (Bilder, Musik, Videos, Anwendungen, etc.) verwenden? 
+</p>
+</div>
+</body>
+</html>

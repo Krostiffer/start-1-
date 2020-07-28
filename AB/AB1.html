@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>[SP20][AB1] Nicht-rekursive Ausdrücke</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<link rel="stylesheet" type="text/css" href="Res/style.css">
+</head>
+<body>
+<div id="header">
+<span style="font-weight:bold;">
+Systematisches Programmieren 
+<span style="float:right;">Sommersemester 2020</span><br>
+Dr. Maurice Chandoo
+<span style="float:right;">Leibniz Universität Hannover</span><br>
+</span>
+</div>
+
+<div id="navi">
+<div style="float: left"><a href="Readme.html">&#10094; Readme</a></div>
+<div style="float: right"><a href="AB2.html">AB2 &#10095;</a></div>
+<div style="margin: 0 auto;width:inherit;text-align:center;">
+<a href="#part1">Teil 1</a>
+<a href="#part2">Teil 2</a>
+<a href="#part3">Teil 3</a>
+<a href="#part4">Teil 4</a>
+</div>
+</div>
+
+<div id="body2" style="margin-bottom:10vh;">
+<h1><span class="abTag">AB1</span> Nicht-rekursive Ausdrücke</h1>
+
+Implementieren Sie die folgenden Funktionen durch nicht-rekursive Ausdrücke und nur unter Verwendung der bereits importierten Funktionen. Außerdem dürfen folgende Sprachkonstrukte nicht verwendet werden:
+
+<ul>
+  <li><a href="http://learnyouahaskell.com/syntax-in-functions#pattern-matching">Pattern Matching</a> (d.h. links von '<code>=</code>' darf nur eine Liste von <a href="https://www.haskell.org/onlinereport/lexemes.html">variable identifiers (<code>varid</code>)</a> stehen, die durch Leerzeichen getrennt sind)</li>
+  <li><code>if ... then ... else ...</code> (benutzen Sie stattdessen <code class="fName">if'</code> sofern importiert)</li>
+  <li><a href="http://learnyouahaskell.com/syntax-in-functions#guards-guards">Guards</a></li>
+  <li><a href="http://learnyouahaskell.com/starting-out#im-a-list-comprehension">List Comprehensions</a>: <code>[(i,j) | i <- [1,2], j <- [3,4]]</code></li>
+  <li><a href="http://learnyouahaskell.com/starting-out#texas-ranges">Arithmetic Sequences</a>: <code>[i .. j]</code></li>
+</ul>
+
+Hinweise (gelten auch für alle weiteren AB):
+<ul>
+	<li>das i-te Argument einer Funktion wird als <code>arg</code>i bezeichnet. Zum Beispiel wird das zweite Argument von <code>f :: Int -> Int -> Int -> Int</code> mit <code>arg2</code> bezeichnet</li>	
+	<li>Sie können Funktionen innerhalb eines Teils in beliebiger Reihenfolge lösen (z.B. um spätere Funktionen zu verwenden, um vorherige zu definieren)</li>
+	<li>negative Zahlen: soweit nicht explizit anders angegeben, müssen Funktionen auch erwartungsgemäß für negative Zahlen funktionieren</li>
+  <li>sollte die Spezifikation für eine Funktion unklar sein (wie soll die Ausgabe für eine bestimmte Eingabe aussehen), fragen Sie nach!</li>
+  <li>Hinweise zur Abgabe der Arbeitsblätter finden Sie in der <a href="Readme.html#abgabe">Readme.html</a></li>  
+</ul>
+
+
+<h2><a href="https://www.youtube.com/watch?v=hPvOqeozYIM">🎦 Funktionen und Ausdrücke</a></h2>
+Für dieses AB sollten Sie sich die Funktionen <code class="fName">map</code>, <code class="fName">filter</code>, <code class="fName">reduce</code>, <code class="fName">foldl</code> und <code class="fName">foldr</code> genauer anschauen.
+<ul>
+  <li><a href="http://learnyouahaskell.com/higher-order-functions#maps-and-filters">Maps and Filters</a>, <a href="http://learnyouahaskell.com/higher-order-functions#folds">Folds</a> auf LearnYouAHaskell</li>
+  <li><a href="https://wiki.haskell.org/Fold">Fold</a> im Haskell-Wiki</li>  
+</ul>
+
+
+
+<h2 id="part1"><a href="#part1">Teil 1</a></h2>
+
+Sie können davon ausgehen, dass <code>arg1</code> für alle Funktionen in diesem Teil (mit Ausnahme von <code class="fName">bigAnd2</code>) mindestens ein Element enthält. 
+
+<!--
+minimum  :: [Int] -> Int
+maximum  :: [Int] -> Int
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">minimum</span>  <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">Int</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+<span style="color: #06287e">maximum</span>  <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">Int</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+</pre></div><!--END-->
+
+Die Funktionen geben ein minimales bzw. maximales Element der Liste <code>arg1</code> zurück.<br>
+
+<!--
+bigAnd   :: [Bool] -> Bool 
+bigOr    :: [Bool] -> Bool 
+bigXor   :: [Bool] -> Bool 
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">bigAnd</span>   <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">Bool</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span> 
+<span style="color: #06287e">bigOr</span>    <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">Bool</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span> 
+<span style="color: #06287e">bigXor</span>   <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">Bool</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span> 
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">bigAnd</code> gibt wahr zurück gdw. alle Elemente in <code>arg1</code> wahr sind.<br>
+
+Die Funktion <code class="fName">bigOr</code> gibt wahr zurück gdw. mindestens ein Element in <code>arg1</code> wahr ist.<br>
+
+Die Funktion <code class="fName">bigXor</code> gibt wahr zurück gdw. eine ungerade Anzahl von Elementen in <code>arg1</code> wahr sind.<br>
+
+<!--
+sum :: [Int] -> Int
+alternatingSum  :: [Int] -> Int
+alternatingSum2 :: [Int] -> Int
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">sum</span> <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">Int</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+<span style="color: #06287e">alternatingSum</span>  <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">Int</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+<span style="color: #06287e">alternatingSum2</span> <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">Int</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">sum</code> gibt die Summe aller Elemente in <code>arg1</code> zurück.<br>
+
+Die Funktion <code class="fName">alternatingSum</code> gibt die alternierende Summe aller Elemente in <code>arg1</code> zurück. Für <code>[1,2,3,4,5]</code> ist das <code>1 - 2 + 3 - 4 + 5</code><br>
+
+Die Funktion <code class="fName">alternatingSum2</code> ist eine Variante, bei der jedes ungerade Element ab dem dritten negativ gewichtet wird. Für <code>[1,2,3,4,5]</code> ist das <code>1 + 2 - 3 + 4 - 5</code><br>
+
+<!--
+bigAnd2 :: [Bool] -> Bool
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">bigAnd2</span> <span style="color: #007020; font-weight: bold">::</span> [<span style="color: #902000">Bool</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Bool</span>
+</pre></div><!--END-->
+Die Funktion <code class="fName">bigAnd2</code> gibt wahr zurück gdw. alle Elemente in der Liste wahr sind oder die Liste leer ist.
+
+
+
+<h2 id="part2"><a href="#part2">Teil 2</a></h2>
+Für diesen Teil dürfen (und müssen) Sie rekursive Ausdrücke verwenden.
+ 
+<!--
+infiniteList :: Int -> [Int] 
+listFromTo   :: Int -> Int -> [Int] 
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">infiniteList</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Int</span>] 
+<span style="color: #06287e">listFromTo</span>   <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Int</span>] 
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">infiniteList</code> ist die unendliche Liste, welche alle <code>Int</code> beginnend ab <code>arg1</code> in aufsteigender Reihenfolge enthält.<br> 
+
+Die Funktion <code class="fName">listFromTo</code> ist die Liste, welche alle <code>Int</code> beginnend von <code>arg1</code> bis <code>arg2</code> in aufsteigender Reihenfolge enthält. Beispiele:
+
+<ul>
+<li><code>listFromTo 2 5 = [2,3,4,5]</code></li>
+<li><code>listFromTo 2 1 = []</code></li>
+</ul>
+
+<!--
+fibTree      :: (Tree Int) 
+fTree        :: (Int -> Int) -> (Tree Int) 
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">fibTree</span> <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Tree</span> <span style="color: #902000">Int</span>) 
+<span style="color: #06287e">fTree</span>   <span style="color: #007020; font-weight: bold">::</span> (<span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>) <span style="color: #007020; font-weight: bold">-&gt;</span> (<span style="color: #902000">Tree</span> <span style="color: #902000">Int</span>) 
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">fibTree</code> ist der unendliche binäre Baum, welcher die Fibonacci-Sequenz (1, 1, 2, 3, 5, 8, 13, ...) beschreibt. Das erste Kind ist der entsprechende Wert aus der Sequenz.  
+<!--
+1
+  1
+  2
+    1
+    3
+      2
+      4
+        3
+        5
+          5
+          6
+            8
+            7
+              13
+              ...
+-->
+<details><summary>Beispiel</summary>
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #40a070">1</span>
+  <span style="color: #40a070">1</span>
+  <span style="color: #40a070">2</span>
+    <span style="color: #40a070">1</span>
+    <span style="color: #40a070">3</span>
+      <span style="color: #40a070">2</span>
+      <span style="color: #40a070">4</span>
+        <span style="color: #40a070">3</span>
+        <span style="color: #40a070">5</span>
+          <span style="color: #40a070">5</span>
+          <span style="color: #40a070">6</span>
+            <span style="color: #40a070">8</span>
+            <span style="color: #40a070">7</span>
+              <span style="color: #40a070">13</span>
+              <span style="color: #666666">...</span>
+</pre></div><!--END-->
+</details>
+
+Die Funktion <code class="fName">fTree</code> ist eine Verallgemeinerung von <code class="fName">fibTree</code> für beliebige Sequenzen. Das erste Kind eines Knotens mit dem Wert <code>i</code> enthält den Wert <code>f i</code>, wobei <code>f = arg1</code>.
+<!--
+1
+  f 1
+  2
+    f 2
+    3
+      f 3
+      4
+        f 4
+        5
+          f 5
+          6
+            f 6
+            7
+              f 7
+              ...
+-->
+<details><summary>Beispiel</summary>
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #40a070">1</span>
+  f <span style="color: #40a070">1</span>
+  <span style="color: #40a070">2</span>
+    f <span style="color: #40a070">2</span>
+    <span style="color: #40a070">3</span>
+      f <span style="color: #40a070">3</span>
+      <span style="color: #40a070">4</span>
+        f <span style="color: #40a070">4</span>
+        <span style="color: #40a070">5</span>
+          f <span style="color: #40a070">5</span>
+          <span style="color: #40a070">6</span>
+            f <span style="color: #40a070">6</span>
+            <span style="color: #40a070">7</span>
+              f <span style="color: #40a070">7</span>
+              <span style="color: #666666">...</span>
+</pre></div><!--END-->
+</details>
+
+
+
+<h2 id="part3"><a href="#part3">Teil 3</a></h2>
+
+<!--
+crossList    :: [a] -> [b] -> [(a,b)]
+genCrossList :: [[a]] -> [[a]]
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">crossList</span>    <span style="color: #007020; font-weight: bold">::</span> [a] <span style="color: #007020; font-weight: bold">-&gt;</span> [b] <span style="color: #007020; font-weight: bold">-&gt;</span> [(a,b)]
+<span style="color: #06287e">genCrossList</span> <span style="color: #007020; font-weight: bold">::</span> [[a]] <span style="color: #007020; font-weight: bold">-&gt;</span> [[a]]
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">crossList</code> ist das kartesische Produkt zweier Listen. 
+Beispiel:
+
+<ul>
+<li><code>crossList [1,2] [3,4] = [(1,3),(1,4),(2,3),(2,4)]</code></li>
+</ul>
+
+Die Funktion <code class="fName">genCrossList</code> ist das kartesische Produkt verallgemeinert auf beliebig viele Argumente, welche als Elemente der Liste <code>arg1</code> repräsentiert werden. Sie können davon ausgehen, dass <code>arg1</code> mindestens ein Element enthält. Beispiele:
+
+<ul>
+	<li><code>genCrossList [[1,2],[3,4],[5,6]] = [[1,3,5],[1,3,6],[1,4,5],[1,4,6],[2,3,5],[2,3,6],[2,4,5],[2,4,6]]</code></li>
+	<li><code>genCrossList [[1,2,3]] = [[1],[2],[3]]</code></li>
+</ul> 
+
+<details><summary>Tipp zu <code class="fName">genCrossList</code> (falls Sie Probleme haben, diese Funktion zu implementieren, versuchen Sie den folgenden Code zu vervollständigen)</summary>
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">genCrossList</span> lst <span style="color: #007020; font-weight: bold">=</span> foldl crossList2 acc lst&#39;
+  <span style="color: #007020; font-weight: bold">where</span>
+    crossList2 x y <span style="color: #007020; font-weight: bold">=</span> map g <span style="color: #666666">?</span>
+      <span style="color: #007020; font-weight: bold">where</span>
+        g (lst,el) <span style="color: #007020; font-weight: bold">=</span> append el lst  
+    lst&#39; <span style="color: #007020; font-weight: bold">=</span> <span style="color: #666666">?</span>
+    acc <span style="color: #007020; font-weight: bold">=</span> map f <span style="color: #666666">?</span>
+      <span style="color: #007020; font-weight: bold">where</span>
+        f el <span style="color: #007020; font-weight: bold">=</span> [el]
+</pre></div>
+</details>
+<br>
+<!--
+primes :: Int -> [Int]
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #06287e">primes</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Int</span>]
+</pre></div><!--END-->
+Die Funktion <code class="fName">primes</code> gibt die ersten <code>arg1</code> (&ge; 0) Primzahlen zurück. Beispiele:
+<ul>
+<li><code>primes 5 = [2,3,5,7,11]</code></li>
+<li><code>primes 0 = []</code></li>
+</ul>
+
+<details><summary>Tipp zu <code class="fName">primes</code></summary>
+Schreiben Sie eine Funktion ohne Eingabeparameter, welche die unendliche Liste aller Primzahlen zurückgibt.
+</details>
+
+<h2 id="part4"><a href="#part4">Teil 4</a></h2>
+
+<!--
+type Base = Int
+toDigits   :: Base -> Int -> [Int]
+fromDigits :: Base -> [Int] -> Int
+length     :: Base -> Int -> Int
+-->
+<!-- HTML generated using hilite.me --><div class="codeSnippet"><pre style="margin: 0; line-height: 125%"><span style="color: #007020; font-weight: bold">type</span> <span style="color: #902000">Base</span> <span style="color: #007020; font-weight: bold">=</span> <span style="color: #902000">Int</span>
+<span style="color: #06287e">toDigits</span>   <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Base</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Int</span>]
+<span style="color: #06287e">fromDigits</span> <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Base</span> <span style="color: #007020; font-weight: bold">-&gt;</span> [<span style="color: #902000">Int</span>] <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+<span style="color: #06287e">length</span>     <span style="color: #007020; font-weight: bold">::</span> <span style="color: #902000">Base</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span> <span style="color: #007020; font-weight: bold">-&gt;</span> <span style="color: #902000">Int</span>
+</pre></div><!--END-->
+
+Die Funktion <code class="fName">toDigits</code> wandelt die Zahl <code>arg2</code> (&ge; 0) in eine Liste von Ziffern zur Basis <code>arg1</code> (&ge; 2) um. Das erste Element der Liste ist die Ziffer mit dem höchsten Stellenwert (für Basis 2 also das most significant bit). Beispiele:
+
+<ul>
+<li><code>toDigits 2 4 = [1,0,0]</code></li>
+<li><code>toDigits 10 9876 = [9,8,7,6]</code></li>
+</ul>
+ 
+Die Funktion <code class="fName">fromDigits</code> ist die Umkehrfunktion von <code class="fName">toDigits</code>. Das heißt, es gilt <code>fromDigits b (toDigits b x) == x</code>. Sie können davon ausgehen, dass jedes Element aus <code>arg2</code> zwischen 0 und (<code>arg1</code> - 1) liegt und <code>arg2</code> mindestens ein Element enthält. Beispiele:
+
+<ul>
+<li><code>fromDigits 2 [1,0,0] = 4</code></li>
+<li><code>fromDigits 10 [9,8,7,6] = 9876</code></li>
+</ul>
+
+Die Funktion <code class="fName">length</code> gibt die Länge der Zahl <code>arg2</code> zur Basis <code>arg1</code> zurück. Beispiele:
+
+<ul>
+<li><code>length 2 4 = 3</code></li>
+<li><code>length 10 9876 = 4</code></li>
+</ul>
+
+Eine Zahl bestehend aus \(n \geq 1\) Ziffern \(x_1, x_2, \dots, x_n\) zur Basis \(b \geq 2\) ist definiert als
+$$\sum_{i=1}^n x_i \cdot b^{i-1}$$
+
+<details><summary>Hinweis zu <code class="fName">find</code> und <code class="fName">zip</code></summary>
+<ul>
+  <li>der Ausdruck <code>find f (infiniteList 1)</code> gibt die erste Zahl <code>x</code> &geq; 1 zurück, für die gilt <code>(f x) == True</code></li>
+  <li>der Ausdruck <code>zip [4,5,6] (infiniteList 7)</code> gibt <code>[(4,7),(5,8),(6,9)]</code> zurück</li>
+</ul>
+</details>
+
+<details><summary>Tipp zu <code class="fName">toDigits</code></summary>
+Schreiben Sie eine Funktion, welche die i-te Ziffer einer Zahl für eine gegebene Basis berechnet. 
+</details>
+
+
+</div>
+</body>
+</html>

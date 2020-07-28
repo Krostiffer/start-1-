@@ -1,0 +1,6 @@
+egyptMult'
+egyptMult
+Operation;a;b;c;i;r;Predicate Sequence;Next Operation;Calls;Source Line No
+o_init;4;0;4;0;0;p_end(1);HALT;;59
+
+Other trace lines

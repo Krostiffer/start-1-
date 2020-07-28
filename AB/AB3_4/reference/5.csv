@@ -1,0 +1,9 @@
+csm'
+csmAlg
+Operation;ca;cb;l;oa;ob;r;x;Predicate Sequence;Next Operation;Calls;Source Line No
+o_init;0;0;undefined;0;0;undefined;(["a"],["b"]);p_eqlen(1) -> p_empty(0);o_nop;;82
+o_nop;;;;;;;;p_aleq(1);o_alen;;86
+o_alen;;;1;;;;;p_ss(0);o_no;;89
+o_no;;;;;;False;;;HALT;;92
+
+Other trace lines

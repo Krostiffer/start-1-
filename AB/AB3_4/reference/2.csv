@@ -1,0 +1,7 @@
+csm'
+csmAlg
+Operation;ca;cb;l;oa;ob;r;x;Predicate Sequence;Next Operation;Calls;Source Line No
+o_init;0;0;undefined;0;0;undefined;(["abab","ab","ab","ab"],["ab","aba","bb","ab"]);p_eqlen(0);o_no;;62
+o_no;;;;;;False;;;HALT;;65
+
+Other trace lines

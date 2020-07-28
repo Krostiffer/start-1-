@@ -1,0 +1,14 @@
+bubbleSort'
+bubbleSort
+Operation;cur;list;passes;sorted;Predicate Sequence;Next Operation;Calls;Source Line No
+o_init;0;[4,3,2,1];0;True;p_lt2(0) -> p_swap(1);o_swap;;23
+o_swap;1;[3,4,2,1];;False;p_endOfIteration(0) -> p_swap(1);o_swap;;27
+o_swap;2;[3,2,4,1];;;p_endOfIteration(0) -> p_swap(1);o_swap;;31
+o_swap;3;[3,2,1,4];;;p_endOfIteration(1) -> p_nextIteration(1);o_next;;35
+o_next;0;;1;True;p_swap(1);o_swap;;39
+o_swap;1;[2,3,1,4];;False;p_endOfIteration(0) -> p_swap(1);o_swap;;42
+o_swap;2;[2,1,3,4];;;p_endOfIteration(1) -> p_nextIteration(1);o_next;;46
+o_next;0;;2;True;p_swap(1);o_swap;;50
+o_swap;1;[1,2,3,4];;False;p_endOfIteration(1) -> p_nextIteration(0);HALT;;53
+
+Other trace lines
