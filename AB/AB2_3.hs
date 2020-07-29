@@ -13,7 +13,7 @@ acyclic      :: Graph -> Bool
 
 -- *** DO NOT MODIFY ABOVE CODE ***
 
-acyclic = undefined
-reduction = undefined
-inNeighbors = undefined
+inNeighbors v ((gv,ge) : g) = undefined
 outNeighbors = undefined
+reduction = undefined
+acyclic = undefined

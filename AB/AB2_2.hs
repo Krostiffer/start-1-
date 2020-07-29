@@ -11,20 +11,12 @@ genericArithmetic :: (Int -> Int) -> (Int -> Int -> Int) -> Int -> Int -> Int
 
 -- *** DO NOT MODIFY ABOVE CODE ***
 
--- as long as y is not null add 1 to the result and sub 1 from y
-add x y = if' (y == 0) (x) (add (succ x) (pred y))
+add x y = (genericArithmetic id addhelp) x y
+addhelp x y = add (succ x) (pred y)
 
--- we need a third value storing the value that is to be added in the recursion
-multHelp :: Int -> Int -> Int -> Int
-multHelp x y a = if' ((pred y) == 0) (x) (multHelp (add a x) (pred y) a) 
+mult x y = (genericArithmetic pred multhelp) x y
+multhelp x y = if' (y == 0) 0 (add (x) (mult x (pred y)))
 
--- precheck  if x or y are 0 as addition cannot handle this correctly (only if both are 0)
-mult x y = if' (x == 0) 0 (if' (y == 0) 0 (multHelp x y x))
-
-powHelp :: Int -> Int -> Int -> Int
-powHelp x y m = if' ((pred y) == 0) (x) (powHelp (mult x m) (pred y) m) 
-
--- precheck if y == 0 (x to the power of 0) to result in 1 as the multiplication can only handle if x == 0
-pow x y =  if' (y == 0) 1 (powHelp x y x)
-
-genericArithmetic = undefined
+pow x y = (genericArithmetic pred powhelp) x y
+powhelp x y = if' (y == 0) 1 (mult (x) (pow x (pred y)))
+genericArithmetic f a x y = if' ((f y) == 0) (x) (a x y)
