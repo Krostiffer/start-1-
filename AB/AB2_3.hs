@@ -13,11 +13,7 @@ acyclic      :: Graph -> Bool
 
 -- *** DO NOT MODIFY ABOVE CODE ***
 
-<<<<<<< HEAD
-inNeighbors v (Graph g) = map fst (filter f g) 
-=======
 inNeighbors v (Graph g) = map fst (filter f g) --filters the graph according to f and returns just the vertix 
->>>>>>> 42dd00c004c0b41a0bccd25a5bb7345e835f4bb5
     where 
         f x = contains v (snd x) --filters the graph-element if v is in outgoing [Vertices]
 
@@ -34,8 +30,4 @@ reduction (Graph g) = Graph (map (f') (filter f g))
         where 
             h x = contains x (vertices (Graph(filter f g)))
 
-<<<<<<< HEAD
-acyclic (Graph g) = if' (isEmptyGraph (Graph g)) True (if' ((Graph g) == (reduction (Graph g))) False (acyclic (reduction (Graph g))))
-=======
 acyclic (Graph g) = if' (isEmptyGraph (Graph g)) True (if' ((Graph g) == (reduction (Graph g))) False (acyclic (reduction (Graph g)))) --first checks if graph is empty (yes -> acyclic) then checks if graph is already reduced to the maximum (yes -> cyclic) else recursive acyclic checking with reduced graph
->>>>>>> 42dd00c004c0b41a0bccd25a5bb7345e835f4bb5
