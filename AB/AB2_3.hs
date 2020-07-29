@@ -13,8 +13,6 @@ acyclic      :: Graph -> Bool
 
 -- *** DO NOT MODIFY ABOVE CODE ***
 
-
-
 inNeighbors v (Graph g) = map fst (filter f g) 
     where 
         f x = contains v (snd x) 
@@ -33,4 +31,3 @@ reduction (Graph g) = Graph (map (f') (filter f g))
             h x = contains x (vertices (Graph(filter f g)))
 
 acyclic (Graph g) = if' (isEmptyGraph (Graph g)) True (if' ((Graph g) == (reduction (Graph g))) False (acyclic (reduction (Graph g))))
-
