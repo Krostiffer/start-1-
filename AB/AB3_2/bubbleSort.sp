@@ -11,16 +11,16 @@ passes :: Int   --number of iterations over the list
 sorted :: Bool  --true at the end of an iteration iff list is sorted
 
 #PREDS
-p_lt2  = ?
-p_swap = ?
-p_endOfIteration = ?
-p_nextIteration = ?
+p_lt2  = (length list) <= 2 -- if length <== 2 no sorting can be done.
+p_swap = (get (cur +1)) < (get cur) --swapPred
+p_endOfIteration = (length list) < cur --iteration ends when cur is at length lsit
+p_nextIteration = (not sorted)
 
 #OPS
 o_init:  
   cur' = 0
   passes' = 0
-  sorted' = ?
+  sorted' = True
   
 o_move:
   cur' = cur + 1
@@ -28,12 +28,12 @@ o_move:
 o_swap:
   list' = (swap cur (cur+1) list)
   cur' = cur + 1
-  sorted' = ?
+  sorted' = False
 
 o_next:
   cur' = 0 
   passes' = passes + 1
-  sorted' = ?
+  sorted' = True
   
 #FLOW
 o_init = (p_lt2 HALT (p_swap o_swap o_move))
