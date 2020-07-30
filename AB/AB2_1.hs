@@ -12,11 +12,11 @@ primitiveSort :: (Ord a) => [a] -> [a]
 -- *** DO NOT MODIFY ABOVE CODE ***
 
 --erstellt eine Liste mit allen indizes und filtert diese wie oben angegeben
-unorderedWitnesses a = filter f [0..((length a) -2)]
+unorderedWitnesses a = filter f [0..((length a) -2)] -- -2, wegen length im vergleich zu index (-1) und der überprüfung von x+1 (-1)
     where
-        f x = (get (x+1) a) < (get (x) a)
+        f x = (get (x+1) a) < (get (x) a) --vergleicht, ob das rechte element größer ist, als das linke
 
--- da set die geänderte Liste ausgibt, wird mit set(set()) zwei Änderungen hintereinander realisiert
+-- da set die geänderte Liste ausgibt, wird mit set(set()) zwei Änderungen hintereinander realisiert; schiebt zuerst el(i) an j, dann el(j) an i
 swap i j a = set (get j a) i (set (get i a) j a)
 
 primitiveSort a = recSort a 0 (unorderedWitnesses a)
@@ -24,4 +24,4 @@ primitiveSort a = recSort a 0 (unorderedWitnesses a)
 recSort a i w = if' (i < length w) goThroughWitnesses untilWitnessesEmpty
     where 
         goThroughWitnesses = recSort (swap (get i w) ((get i w) + 1) a) (i + 1) w --swapt alle witnesses, solange welche da sind
-        untilWitnessesEmpty = if' (0 < length w) (recSort a 0 (unorderedWitnesses a)) a --startet das swappen von vorn, sofern es noch unordered witnesses gibt
+        untilWitnessesEmpty = if' (0 < length w) (recSort a 0 (unorderedWitnesses a)) a --startet das swappen von vorn, sofern es noch unordered witnesses gibt, gibt sonst die Liste zurück

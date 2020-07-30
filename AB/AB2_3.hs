@@ -30,4 +30,4 @@ reduction (Graph g) = Graph (map (f') (filter f g))
         where 
             h x = contains x (vertices (Graph(filter f g)))
 
-acyclic (Graph g) = if' (isEmptyGraph (Graph g)) True (if' ((Graph g) == (reduction (Graph g))) False (acyclic (reduction (Graph g)))) --first checks if graph is empty (yes -> acyclic) then checks if graph is already reduced to the maximum (yes -> cyclic) else recursive acyclic checking with reduced graph
+acyclic (Graph g) = if' (isEmptyGraph (Graph g)) True (if' ((Graph g) == (reduction (Graph g))) False (acyclic (reduction (Graph g)))) --first checks if graph is empty (yes -> acyclic) then checks if graph is already reduced to the maximum (yes -> cyclic = not acyclic) else recursive acyclic checking with reduced graph

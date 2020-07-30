@@ -39,7 +39,7 @@ subsets lst = if' (isEmpty lst) [] (filter (f) (subsetsHelp lst []))
   where
     f x = 0 < (length x)
 
--- Filters the subsets  so that only the subsets with expected length are returned
+-- Filters the subsets so that only the subsets with expected length are returned
 kSubsets i a = filter f (subsets' a)
   where 
     f x = i == (length x)
