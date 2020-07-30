@@ -11,5 +11,5 @@ taut :: BooleanFunction -> Bool -- true iff all assignments satisfy the formula
        
 -- *** DO NOT MODIFY ABOVE CODE ***
 
-sat = undefined
-taut = undefined
+sat bf = if' ((arity bf) == 0) (eval [] bf) (sat (partialApply False bf) || sat (partialApply True bf))
+taut bf = if' ((arity bf) == 0) (eval [] bf) (taut (partialApply False bf) && taut (partialApply True bf))
