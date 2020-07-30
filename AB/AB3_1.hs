@@ -24,15 +24,29 @@ swapOp     :: (Ord a) => (Operation ([a],Int))
 
 -- *** DO NOT MODIFY ABOVE CODE ***
 
-if2 pred op state = undefined
-while = undefined
-repeat = undefined  
-foreach = undefined
+if2 pred op state = if' (pred (state)) (op state) state
+while pred op state = if' (pred (state)) (while pred op (op state)) state
+repeat i op state = if' (0 < i) (repeat (i-1) op (op state)) state
 
-tailRecursion = undefined
+foreach lst op state = foldl f state lst
+  where
+    f state' el =   fst (op (state', el))
 
-primitiveSort = undefined
 
-bubbleSort = undefined
-swapPred = undefined
-swapOp = undefined
+tailRecursion g h p state = (g.while p h) state
+
+swapHelp lst = swap ((first.unorderedWitnesses) lst) (((first.unorderedWitnesses) lst) +1) lst
+
+primitiveSort lst = (while (not.isEmpty.unorderedWitnesses) (swapHelp)) lst
+
+bubbleSort lst = program lst
+  where
+    n = length lst
+    program = 
+        (repeat (n-1)
+          (foreach [0 .. n-2] (if2 swapPred swapOp)
+          )
+        )
+        
+swapPred (lst,i) = (get (i+1) lst) < (get i lst)
+swapOp (lst,i) = ((swap i (i+1) lst), undefined)
