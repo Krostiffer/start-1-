@@ -11,9 +11,9 @@ passes :: Int   --number of iterations over the list
 sorted :: Bool  --true at the end of an iteration iff list is sorted
 
 #PREDS
-p_lt2  = (length list) <= 2 -- if length <== 2 no sorting can be done.
-p_swap = (get (cur +1)) < (get cur) --swapPred
-p_endOfIteration = (length list) < cur --iteration ends when cur is at length lsit
+p_lt2  = (length list) < 3 -- if length <== 2 no sorting can be done.
+p_swap = (get (cur +1) list) < (get cur list) --swapPred
+p_endOfIteration = (length list) < (cur +2) --iteration ends when cur is at length lsit
 p_nextIteration = (not sorted)
 
 #OPS
