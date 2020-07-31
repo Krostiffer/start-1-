@@ -58,11 +58,11 @@ csm' x = (traceProgramCall "csm'" "csmAlg" [("ca","Int"),("cb","Int"),("l","Int"
 
 csmAlg_p_aleq (Data_csmAlg ca cb l oa ob r x _ _ _ _ _ _ _) = (((lena x ca) - oa) <= ((lenb x cb) - ob))
 
-csmAlg_p_empty (Data_csmAlg ca cb l oa ob r x _ _ _ _ _ _ _) = (strlena x (coa x) -1) == 0
+csmAlg_p_empty (Data_csmAlg ca cb l oa ob r x _ _ _ _ _ _ _) = (strlena x ((coa x) -1)) == 0
 
 csmAlg_p_eob (Data_csmAlg ca cb l oa ob r x _ _ _ _ _ _ _) = ((lenb x cb) == (l + ob))
 
-csmAlg_p_eqlen (Data_csmAlg ca cb l oa ob r x _ _ _ _ _ _ _) = (strlena x (coa x) -1) == (strlenb x (cob x) -1)
+csmAlg_p_eqlen (Data_csmAlg ca cb l oa ob r x _ _ _ _ _ _ _) = (strlena x ((coa x) -1)) == (strlenb x ((cob x) -1))
 
 csmAlg_p_fc (Data_csmAlg ca cb l oa ob r x _ _ _ _ _ _ _) = ((ca == ((coa x) - 1)) && (cb == ((cob x) - 1)))
 
@@ -124,8 +124,8 @@ csmAlg_o_anbn (Data_csmAlg ca cb l oa ob r x ca_iD_ cb_iD_ l_iD_ oa_iD_ ob_iD_ r
 csmAlg_o_anbs (Data_csmAlg ca cb l oa ob r x ca_iD_ cb_iD_ l_iD_ oa_iD_ ob_iD_ r_iD_ x_iD_) = (traceProgramOp "csmAlg" "o_anbs" data_ [True,False,False,True,True,False,False] flow_)
   where
     ca' = (ca + 1)
-    oa' = l
-    ob' = 1
+    oa' = 0
+    ob' = l
     cb' = cb
     l' = l
     r' = r
@@ -145,8 +145,8 @@ csmAlg_o_anbs (Data_csmAlg ca cb l oa ob r x ca_iD_ cb_iD_ l_iD_ oa_iD_ ob_iD_ r
 csmAlg_o_asbn (Data_csmAlg ca cb l oa ob r x ca_iD_ cb_iD_ l_iD_ oa_iD_ ob_iD_ r_iD_ x_iD_) = (traceProgramOp "csmAlg" "o_asbn" data_ [False,True,False,True,True,False,False] flow_)
   where
     cb' = (cb + 1)
-    oa' = 0
-    ob' = l
+    oa' = l
+    ob' = 0
     ca' = ca
     l' = l
     r' = r

@@ -14,12 +14,12 @@ l  :: Int
 r  :: Bool
 
 #PREDS
-p_eqlen = (strlena x (coa x) -1) == (strlenb x (cob x) -1) --true iff (length (concat a)) == (length (concat b))
+p_eqlen = (strlena x ((coa x) -1)) == (strlenb x ((cob x) -1)) --true iff (length (concat a)) == (length (concat b))
 p_ss    = (ssc x ca cb oa ob l)
 p_aleq  = (((lena x ca) - oa) <= ((lenb x cb) - ob)) 
 p_fc    = ((ca == ((coa x) - 1)) && (cb == ((cob x) - 1))) --fc = final call (last comparison)
 p_eob   = ((lenb x cb) == (l + ob)) --end of b reached
-p_empty = (strlena x (coa x) -1) == 0 --true iff (length (concat a)) == 0
+p_empty = (strlena x ((coa x) -1)) == 0 --true iff (length (concat a)) == 0
 
 #OPS
 o_init:  
@@ -36,13 +36,13 @@ o_blen:
     
 o_anbs: 
   ca' = (ca + 1)
-  oa' = l
-  ob' = 1
+  oa' = 0
+  ob' = l
 
 o_asbn: 
   cb' = (cb + 1)
-  ob' = l
-  oa' = 0
+  ob' = 0
+  oa' = l
     
 o_anbn: 
   ca' = (ca + 1)
