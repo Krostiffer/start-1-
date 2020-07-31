@@ -44,8 +44,7 @@ bubbleSort lst = program lst
     n = length lst
     program = 
         (repeat (n-1)
-          (foreach [0 .. n-2] (if2 swapPred swapOp)
-          )
+          (foreach [0 .. n-2] (if2 swapPred swapOp))
         )
         
 swapPred (lst,i) = (get (i+1) lst) < (get i lst)
