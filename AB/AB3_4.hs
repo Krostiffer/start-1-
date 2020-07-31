@@ -297,6 +297,6 @@ instance Show Data_csmAlg where
 --END OF PROGRAM csmAlg
 
 strlena :: CSMInstance -> Int -> Int
-strlena a i = if' (i < 0) 0 (if' (i <= 0) (lena a i) ((lena a i) + (strlena a (i-1))))
+strlena a i = if' (i < 0) 0 (if' (i == 0) (lena a i) ((lena a i) + (strlena a (i-1))))
 strlenb :: CSMInstance -> Int -> Int
 strlenb a i = if' (i < 0) 0 (if' (i == 0) (lenb a i) ((lenb a i) + (strlenb a (i-1))))
