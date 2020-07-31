@@ -44,11 +44,11 @@ bubbleSort' list = (traceProgramCall "bubbleSort'" "bubbleSort" [("cur","Int"),(
   where
     (Data_bubbleSort _ list' _ _ _ _ _ _) = (bubbleSort_o_init (Data_bubbleSort undefined list undefined undefined False True False False))
 
-bubbleSort_p_endOfIteration (Data_bubbleSort cur list passes sorted _ _ _ _) = (length list) < (cur +2)
+bubbleSort_p_endOfIteration (Data_bubbleSort cur list passes sorted _ _ _ _) = (length list) < ((cur +2) + passes)
 
-bubbleSort_p_lt2 (Data_bubbleSort cur list passes sorted _ _ _ _) = (length list) < 3
+bubbleSort_p_lt2 (Data_bubbleSort cur list passes sorted _ _ _ _) = (length list) < 2
 
-bubbleSort_p_nextIteration (Data_bubbleSort cur list passes sorted _ _ _ _) = (not sorted)
+bubbleSort_p_nextIteration (Data_bubbleSort cur list passes sorted _ _ _ _) = (not sorted) && ((passes +2) < (length list))
 
 bubbleSort_p_swap (Data_bubbleSort cur list passes sorted _ _ _ _) = (get (cur +1) list) < (get cur list)
 
