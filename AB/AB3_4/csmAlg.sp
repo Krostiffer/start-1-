@@ -14,12 +14,12 @@ l  :: Int
 r  :: Bool
 
 #PREDS
-p_eqlen = ? --true iff (length (concat a)) == (length (concat b))
+p_eqlen = (strlena x (coa x) -1) == (strlenb x (cob x) -1) --true iff (length (concat a)) == (length (concat b))
 p_ss    = (ssc x ca cb oa ob l)
 p_aleq  = (((lena x ca) - oa) <= ((lenb x cb) - ob)) 
 p_fc    = ((ca == ((coa x) - 1)) && (cb == ((cob x) - 1))) --fc = final call (last comparison)
 p_eob   = ((lenb x cb) == (l + ob)) --end of b reached
-p_empty = ? --true iff (length (concat a)) == 0
+p_empty = (strlena x (coa x) -1) == 0 --true iff (length (concat a)) == 0
 
 #OPS
 o_init:  
@@ -29,42 +29,42 @@ o_init:
   ob' = 0
 
 o_alen:
-  l' = ?
+  l' = ((lena x ca) - oa)
 
 o_blen:
-  l' = ?
+  l' = ((lenb x cb) - ob) 
     
 o_anbs: 
-  ca' = ?
-  oa' = ?
-  ob' = ?
+  ca' = (ca + 1)
+  oa' = l
+  ob' = 1
 
 o_asbn: 
-  cb' = ?
-  ob' = ?
-  oa' = ?
+  cb' = (cb + 1)
+  ob' = l
+  oa' = 0
     
 o_anbn: 
-  ca' = ?
-  cb' = ?
-  oa' = ?
-  ob' = ?
+  ca' = (ca + 1)
+  cb' = (cb + 1)
+  oa' = 0
+  ob' = 0
 
 o_yes:
-  r' = ?
+  r' = True
 
 o_no:
-  r' = ?
+  r' = False
     
 o_nop:
 
 #FLOW
-o_init = ?
-o_nop  = ?
-o_alen = (p_ss (? o_yes (? ? ?) ) o_no) --hint: look at AB3_4/reference/1.csv; predicate sequences = path through tree
-o_blen = ?
-o_anbs = ? 
-o_asbn = ?
-o_anbn = ?
+o_init = (p_eqlen (p_empty o_yes o_nop) o_no)
+o_nop  = (p_aleq o_alen o_blen)
+o_alen = (p_ss (p_fc o_yes (p_eob o_anbn o_anbs) ) o_no) --hint: look at AB3_4/reference/1.csv; predicate sequences = path through tree
+o_blen = (p_ss o_asbn o_no)
+o_anbs = o_nop
+o_asbn = o_nop
+o_anbn = o_nop
 o_yes  = HALT
 o_no   = HALT
