@@ -33,7 +33,13 @@ a2 = Testing.m2
 a3 = Testing.m3
 
 statePath a s i = if' ((length i) == 0) [s] (prepend s (statePath a (nextState a s (first i)) (removeFirst i)))
+-- map takes arguments in the wrong order; help function to fix this issue
+-- Creates a new Tree for every State in the nextstate-List.
+traverseNextStates :: NFA -> String -> State -> Tree State
 traverseNextStates a input state = stateTree a state (removeFirst input)
+
+-- Make a tree with the cur_state as the node and the nextstates as children
+-- stops when input is read (similar to statePath)
 stateTree a cur_state input = 
   if' (isEmpty input) 
   (
@@ -45,26 +51,33 @@ stateTree a cur_state input =
 -- teststatePath = statePath a1 "z0" "a"
 -- tst = stateTree a3 "z0" "001"
 
+-- the last state returned by the statePath-Function has to be checked for acceptance
 inLanguageDFA a i = isFinalState a (last (statePath a (startState a) (i)))
-recOr a h = 
-  if' (isEmpty h) 
+
+-- 
+recOr :: NFA -> [State] -> Bool
+recOr a states = 
+  if' (isEmpty states) 
   (
     False
   )(
-    isFinalState a (first h) || recOr a (removeFirst h)
+    isFinalState a (first states) || recOr a (removeFirst states)
   )
 
 inLanguageNFA a i = recOr a (nextStateList a i [startState a])
 
+--
 nextStateList :: NFA -> String -> [State] -> [State]
 nextStateList a i z = 
-  if' (length i == 1)
+  if' (length i == 0)
     (
-      nextList a i z
+      z
     )(
       nextStateList a (removeFirst i) (nextList a i z)
     )
 
+--
+nextList :: NFA -> String -> [State] -> [State]
 nextList a i z = 
   if' (isEmpty z) 
   (
