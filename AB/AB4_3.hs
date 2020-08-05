@@ -12,6 +12,12 @@ import SPLib.Map (fromList, set, empty)
 determinize  :: String -> NFA -> DFA
 
   
--- *** DO NOT MODIFY ABOVE CODE ***
+-- *** DO NOT MODIFY ABOVE CODE **
+
+noNewStates :: [State] -> State -> Bool
+noNewStates states state = contains state states
+
+listToState :: [State] -> String
+listToState states = foldl (++) "" states 
 
 determinize = undefined

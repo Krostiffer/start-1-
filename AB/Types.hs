@@ -84,7 +84,7 @@ nextStates :: NFA -> State -> Char -> [State] --if no transition then []
 
 isUndefinedTransition :: DFA -> State -> Char -> Bool
 
-class FSA0 a where  
+class FSA0 a where
   startState   :: a -> State  
   isFinalState :: a -> State -> Bool    
   states       :: a -> [State] 
