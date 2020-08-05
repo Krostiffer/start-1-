@@ -74,8 +74,8 @@ partition_p_validList (Data_partition counter cur end list pivot start _ _ _ _ _
 
 partition_o_init (Data_partition counter cur end list pivot start counter_iD_ cur_iD_ end_iD_ list_iD_ pivot_iD_ start_iD_) = (traceProgramOp "partition" "o_init" data_ [True,True,False,False,False,False] flow_)
   where
-    counter' = ((length list)-1)
-    cur' = 0
+    counter' = (end - start)
+    cur' = start
     end' = end
     list' = list
     pivot' = pivot
