@@ -24,8 +24,8 @@ p_swapTwice = (get pivot list) <= (get (pivot+1) list) -- check only if pivot <=
 
 #OPS
 o_init:
-  cur' = 0
-  counter' = ((length list)-1)
+  cur' = start
+  counter' = (end - start)
 
 o_move:
 
