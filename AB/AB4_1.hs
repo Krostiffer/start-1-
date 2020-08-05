@@ -7,7 +7,7 @@ import SPLib.Basic (Bool(True,False), String, trace, undefined, if', not, (&&), 
 import SPLib.List (map, filter, foldl, first, removeFirst, prepend, last, concat, isEmpty, length)
 import SPLib.Tree (Tree(Tree))
 
-
+import Testing
 
 class FormalLanguage a where
   inLanguage :: a -> String -> Bool
@@ -28,10 +28,11 @@ isTotal :: DFA -> String -> Bool --true iff transition function is defined for a
   
 -- *** DO NOT MODIFY ABOVE CODE ***
 
--- a1 = Testing.m1
--- a2 = Testing.m2
--- a3 = Testing.m3
-statePath a s i = if' ((length i) == 1) [(nextState a s (first i))] (prepend s (statePath a (nextState a s (first i)) (removeFirst i)))
+a1 = Testing.m1
+a2 = Testing.m2
+a3 = Testing.m3
+
+statePath a s i = if' ((length i) == 0) [s] (prepend s (statePath a (nextState a s (first i)) (removeFirst i)))
 traverseNextStates a input state = stateTree a state (removeFirst input)
 stateTree a cur_state input = 
   if' (isEmpty input) 

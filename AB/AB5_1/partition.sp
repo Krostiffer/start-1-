@@ -20,7 +20,7 @@ p_validCount = counter > 0
 p_greaterPivot = pivot > cur
 p_swap = (get pivot list) <= (get cur list) -- if pivot > cur
 p_swap2 = (get pivot list) > (get cur list) -- if pivot <= cur
-p_swapTwice = (get pivot list) <= (get (pivot+1) list) -- check only if pivot <= cur
+p_swapTwice = (get pivot list) <= (get (pivot + 1) list) -- check only if pivot <= cur
 
 #OPS
 o_init:
@@ -32,18 +32,18 @@ o_move:
 o_swap:
   list' = (swap cur pivot list)
   pivot' = cur
-  cur' = cur+1
-  counter' = counter-1
+  cur' = cur + 1
+  counter' = counter - 1
 
 o_swapTwice:
-  list' = (swap cur (pivot+1) (swap cur pivot list))
-  pivot' = pivot+1
-  cur' = cur+1
+  list' = (swap cur (pivot + 1) (swap cur pivot list))
+  pivot' = pivot + 1
+  cur' = cur + 1
   counter' = counter-1
 
 o_skip:
-  cur' = cur+1
-  counter' = counter-1
+  cur' = cur + 1
+  counter' = counter - 1
 
 #FLOW
 o_init = (p_validList (o_move) (HALT)) -- If the list only has one element, return the list.

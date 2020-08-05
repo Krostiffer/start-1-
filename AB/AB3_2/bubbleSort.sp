@@ -33,7 +33,7 @@ o_swap:
 o_next:
   cur' = 0  --element index gets reset
   passes' = passes + 1 -- passes gets increased, so further iterations need 1 step less
-  sorted' = True 
+  sorted' = True
   
 #FLOW
 o_init = (p_lt2 HALT (p_swap o_swap o_move)) --halts if l <= 1 
