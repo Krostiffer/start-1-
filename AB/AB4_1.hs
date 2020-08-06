@@ -7,7 +7,6 @@ import SPLib.Basic (Bool(True,False), String, trace, undefined, if', not, (&&), 
 import SPLib.List (map, filter, foldl, first, removeFirst, prepend, last, concat, isEmpty, length)
 import SPLib.Tree (Tree(Tree))
 
-import Testing
 
 class FormalLanguage a where
   inLanguage :: a -> String -> Bool
@@ -28,9 +27,6 @@ isTotal :: DFA -> String -> Bool --true iff transition function is defined for a
   
 -- *** DO NOT MODIFY ABOVE CODE ***
 
-a1 = Testing.m1
-a2 = Testing.m2
-a3 = Testing.m3
 
 statePath a s i = if' ((length i) == 0) [s] (prepend s (statePath a (nextState a s (first i)) (removeFirst i)))
 -- map takes arguments in the wrong order; help function to fix this issue
@@ -87,4 +83,6 @@ nextList a i z =
   )
 -- tstnxtstlst = nextStateList a3 "001" ["z0"]
 
+
+-- checks if the last state in the taken path is undefined
 isTotal a input = (last (statePath a (startState a) input)) /= "UNDEFINED!"
