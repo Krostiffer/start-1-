@@ -55,7 +55,13 @@ o_init = (p_validList (o_move) (HALT)) -- If the list only has one element, retu
 --		- if true, further check if the pivot+1-element is greater than the current pivot element.
 --			- if true, swap twice (if you only swap once, we might have a greater element inbetween)
 --			- if not, swap only once.
-o_move = (p_validCount (p_greaterPivot (p_swap (o_swap) (o_skip)) (p_swap2 (p_swapTwice (o_swapTwice) (o_swap)) (o_skip))) (HALT))
+o_move = (p_validCount 
+            (p_greaterPivot 
+                (p_swap (o_swap) (o_skip)) 
+                (p_swap2 
+                    (p_swapTwice (o_swapTwice) (o_swap)) 
+                    (o_skip))) 
+          (HALT))
 o_swap = (p_validCount (p_greaterPivot (p_swap (o_swap) (o_skip)) (p_swap2 (p_swapTwice (o_swapTwice) (o_swap)) (o_skip))) (HALT))
 o_swapTwice = (p_validCount (p_greaterPivot (p_swap (o_swap) (o_skip)) (p_swap2 (p_swapTwice (o_swapTwice) (o_swap)) (o_skip))) (HALT))
 o_skip = (p_validCount (p_greaterPivot (p_swap (o_swap) (o_skip)) (p_swap2 (p_swapTwice (o_swapTwice) (o_swap)) (o_skip))) (HALT))
