@@ -20,8 +20,8 @@ p_checkElement = pivot > i
 #OPS
 o_init:
   i' = (i-1)
+  end' = (length list) -1
   start' = 0
-  end' = ((length list)-1)
 
 o_firstSearch:
   list' = (partition_list list start end end)

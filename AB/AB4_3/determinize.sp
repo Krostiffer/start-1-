@@ -22,8 +22,13 @@ delta_fun :: DeltaFun
 
 #PREDS
 -- True, if no new states are found in next_states
+<<<<<<< HEAD
 p_inList = (foldl (&&) True (map (noNewStates states_list) next_states) && (isEmpty work_list))
 p_isEndState = not (isEmpty (filter (isFinalState nfa) cur_state))
+=======
+p_inList = foldl (&&) True (map (noNewStates states_list) next_states)
+p_isEndState = not (isEmpty (filter (isFinalState nfa) cur_state)) 
+>>>>>>> 6fa69520818d7364c4daf15e07506b48e92d7799
 
 
 #OPS
@@ -31,7 +36,11 @@ o_init:
     cur_state' = [startState nfa]
     states_list' = [[startState nfa]]
     next_states' = [[]]
+<<<<<<< HEAD
     work_list' = []
+=======
+    work_list' = [[]]
+>>>>>>> 6fa69520818d7364c4daf15e07506b48e92d7799
     end_states' = []
     delta_fun' = empty
 
@@ -49,6 +58,7 @@ o_updateCurState:
     work_list' = removeFirst work_list
 
 o_updateEndState:
+<<<<<<< HEAD
     end_states' = append (listToState cur_state) end_states
 
 o_end:
@@ -57,6 +67,12 @@ o_end:
 o_makeDFA:
     dfa' = DFA (startState nfa) end_states delta_fun
 
+=======
+    end_states' = end_states ++ cur_state 
+
+o_makeDFA:
+    dfa' = DFA (startState nfa) end_states (delta_fun)
+>>>>>>> 6fa69520818d7364c4daf15e07506b48e92d7799
 #FLOW
 o_init = (o_nextStates)
 o_nextStates = (p_inList 

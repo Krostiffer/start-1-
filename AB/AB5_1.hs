@@ -18,7 +18,6 @@ select = select'
 
 
 -- *** DO NOT MODIFY ABOVE CODE ***
-
 --START OF PROGRAM select
 
 data Data_select  = Data_select 
@@ -98,7 +97,7 @@ select_o_found (Data_select end i list pivot res start end_iD_ i_iD_ list_iD_ pi
 
 select_o_init (Data_select end i list pivot res start end_iD_ i_iD_ list_iD_ pivot_iD_ res_iD_ start_iD_) = (traceProgramOp "select" "o_init" data_ [True,True,False,False,False,True] flow_)
   where
-    end' = ((length list)-1)
+    end' = (length list) -1
     i' = (i-1)
     start' = 0
     list' = list
