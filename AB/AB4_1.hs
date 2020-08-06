@@ -54,7 +54,8 @@ stateTree a cur_state input =
 -- the last state returned by the statePath-Function has to be checked for acceptance
 inLanguageDFA a i = isFinalState a (last (statePath a (startState a) (i)))
 
--- 
+
+-- returns True, if one of the given states is a final state
 recOr :: NFA -> [State] -> Bool
 recOr a states = 
   if' (isEmpty states) 
@@ -64,9 +65,8 @@ recOr a states =
     isFinalState a (first states) || recOr a (removeFirst states)
   )
 
-inLanguageNFA a i = recOr a (nextStateList a i [startState a])
 
---
+-- returns the list of next states for a given list of states with String i
 nextStateList :: NFA -> String -> [State] -> [State]
 nextStateList a i z = 
   if' (length i == 0)
@@ -76,7 +76,7 @@ nextStateList a i z =
       nextStateList a (removeFirst i) (nextList a i z)
     )
 
---
+-- returns the list of next states for a given list of states for first symbol in i (since we have no CHAR)
 nextList :: NFA -> String -> [State] -> [State]
 nextList a i z = 
   if' (isEmpty z) 
@@ -87,4 +87,7 @@ nextList a i z =
   )
 -- tstnxtstlst = nextStateList a3 "001" ["z0"]
 
+inLanguageNFA a i = recOr a (nextStateList a i [startState a]) --checks if nextStateList after input i contains a final state
+
+--
 isTotal a input = (last (statePath a (startState a) input)) /= "UNDEFINED!"
