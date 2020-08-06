@@ -8,9 +8,9 @@ import SPLib.Basic (Show(show), Bool(True,False), String, read, undefined, if', 
 import SPLib.List (sort, removeDuplicates, filter, map, foldl, first, removeFirst, prepend, last, removeLast, append, isEmpty, concat, contains)
 import SPLib.Map (fromList, set, empty)
 
-import Testing -- DELETE BEFORE SUBMISSION
-import Control.DeepSeq (deepseq) -- DELETE BEFORE SUBMISSION
-import Prelude (putStrLn,return) -- DELETE BEFORE
+-- import Testing -- DELETE BEFORE SUBMISSION
+-- import Control.DeepSeq (deepseq) -- DELETE BEFORE SUBMISSION
+-- import Prelude (putStrLn,return) -- DELETE BEFORE
 
 determinize  :: String -> NFA -> DFA
 
@@ -18,31 +18,32 @@ determinize  :: String -> NFA -> DFA
 -- *** DO NOT MODIFY ABOVE CODE **
 determinize = determinize'
 
-a1 = Testing.m2
-a2 = Testing.m3
-a3 = Testing.m4
-a4 = Testing.m5
+-- a1 = Testing.m2
+-- a2 = Testing.m3
+-- a3 = Testing.m4
+-- a4 = Testing.m5
 
-main = do
-  let tests = [(show (determinize "01" a1))]
-  deepseq tests (putStrLn "End")
+-- main = do
+--   let tests = [(show (determinize "01" a1))]
+--   deepseq tests (putStrLn "End")
 
-
+--returns True, if a state, that is not in the statelist appears in the worklist
 newStates :: [[State]] -> [State] -> Bool
 newStates states state = not (contains (listToState state) (map listToState states))
+
+--newStates, but false; just used for mapping
 noNewStates :: [[State]] -> [State] -> Bool
 noNewStates states state = contains (listToState state) (map listToState states)
 
-listToState :: [State] -> String
+--gets a list of states and returns one state named after the states in the list
+listToState :: [State] -> State
 listToState states = show (removeDuplicates(sort states))
--- listToState states = foldl (++) "" states
 
-
-
+--returns the list of following states of a list of states when inputing symbol
 nextList automat curState symbol =
   if' (isEmpty curState) [] (concat (map (\x -> nextStates automat x symbol) curState))
 
-
+--recursively sets the delta function; makes a tuple (state, input) from the list of next states
 mapToDelta neSt cur_state alphab delta = 
   if' (isEmpty (removeFirst alphab))
     (set (listToState (first neSt)) ((listToState cur_state), first alphab) delta)
