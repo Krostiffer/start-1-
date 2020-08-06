@@ -37,15 +37,12 @@ o_searchRight:
   list' = (partition_list list (pivot+1) end end)
   pivot' = (partition_pivot list (pivot+1) end end)
 
-o_found: 
-    res' = (get pivot list)
+o_found:
+  res' = (get pivot list)
 
 #FLOW
-o_init = o_firstSearch
-o_firstSearch = (p_elementFound (o_found) (p_checkElement o_searchLeft o_searchRight))
-
-o_searchLeft = (p_elementFound (o_found) (p_checkElement o_searchLeft o_searchRight))
-
-o_searchRight = (p_elementFound (o_found) (p_checkElement o_searchLeft o_searchRight))
-
+o_init = (o_firstSearch)
+o_firstSearch = (p_elementFound (o_found) (p_checkElement (o_searchLeft) (o_searchRight)))
+o_searchLeft = (p_elementFound (o_found) (p_checkElement (o_searchLeft) (o_searchRight)))
+o_searchRight = (p_elementFound (o_found) (p_checkElement (o_searchLeft) (o_searchRight)))
 o_found = HALT
