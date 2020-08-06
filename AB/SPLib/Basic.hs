@@ -151,4 +151,4 @@ traceProgramHalt pName x = if' (shouldProgramBeTraced pName) (trace str x) x
 shouldProgramBeTraced pName = elem pName whiteList 
   where
     --whiteList = ["bubbleSort","egyptMult","csmAlg","josephus","select","partition"]
-    whiteList = ["bubbleSort","egyptMult","csmAlg","josephus"]--,"determinize"]
+    whiteList = ["bubbleSort","egyptMult","csmAlg","josephus","determinize","select","partition"]

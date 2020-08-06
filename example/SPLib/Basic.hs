@@ -150,4 +150,4 @@ traceProgramHalt pName x = if' (shouldProgramBeTraced pName) (trace str x) x
 -- Option 2: trace only those programs whose name is in the white list
 shouldProgramBeTraced pName = elem pName whiteList 
   where   
-    whiteList = []
+    whiteList = ["determinize"]
