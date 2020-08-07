@@ -7,6 +7,7 @@ import SPLib.Basic (Bool(True,False), String, trace, undefined, if', not, (&&), 
 import SPLib.List (map, filter, foldl, first, removeFirst, prepend, last, concat, isEmpty, length)
 import SPLib.Tree (Tree(Tree))
 
+-- import Testing -- DELETE BEFORE SUBMISSION
 
 class FormalLanguage a where
   inLanguage :: a -> String -> Bool
@@ -27,6 +28,15 @@ isTotal :: DFA -> String -> Bool --true iff transition function is defined for a
   
 -- *** DO NOT MODIFY ABOVE CODE ***
 
+-- DFAs for Testing
+--dfa_0 = Testing.dfa0
+--dfa_1 = Testing.dfa1
+--dfa_2 = Testing.dfa2
+
+--nfa_0 = Testing.m2
+--nfa_1 = Testing.m3
+--nfa_2 = Testing.m4
+--nfa_3 = Testing.m5
 
 statePath a s i = if' ((length i) == 0) [s] (prepend s (statePath a (nextState a s (first i)) (removeFirst i)))
 -- map takes arguments in the wrong order; help function to fix this issue
@@ -82,6 +92,8 @@ nextList a i z =
     concat (map (\x -> nextStates a x (first i)) z)
   )
 -- tstnxtstlst = nextStateList a3 "001" ["z0"]
+
+inLanguageNFA a i = recOr a (nextStateList a i [startState a]) --checks if nextStateList after input i contains a final state
 
 
 -- checks if the last state in the taken path is undefined

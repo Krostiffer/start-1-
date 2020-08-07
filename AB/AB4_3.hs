@@ -8,24 +8,20 @@ import SPLib.Basic (Show(show), Bool(True,False), String, read, undefined, if', 
 import SPLib.List (sort, removeDuplicates, filter, map, foldl, first, removeFirst, prepend, last, removeLast, append, isEmpty, concat, contains)
 import SPLib.Map (fromList, set, empty)
 
--- import Testing -- DELETE BEFORE SUBMISSION
--- import Control.DeepSeq (deepseq) -- DELETE BEFORE SUBMISSION
--- import Prelude (putStrLn,return) -- DELETE BEFORE
+import Testing -- DELETE BEFORE SUBMISSION
 
 determinize  :: String -> NFA -> DFA
 
   
--- *** DO NOT MODIFY ABOVE CODE **
+-- *** DO NOT MODIFY ABOVE CODE ***
 determinize = determinize'
 
--- a1 = Testing.m2
--- a2 = Testing.m3
--- a3 = Testing.m4
--- a4 = Testing.m5
+a0 = Testing.nfa0
+a1 = Testing.nfa1
+a2 = Testing.nfa2
+a3 = Testing.nfa3
+a4 = Testing.nfa4
 
--- main = do
---   let tests = [(show (determinize "01" a1))]
---   deepseq tests (putStrLn "End")
 
 --returns True, if a state, that is not in the statelist appears in the worklist
 newStates :: [[State]] -> [State] -> Bool
